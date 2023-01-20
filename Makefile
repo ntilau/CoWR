@@ -1,35 +1,37 @@
 .SUFFIXES: .cpp .o
 
 CC=g++
-RES=windres
 
 BINDIR= ./bin
-SRCDIR= ./
-OBJDIR= ./obj
+SRCDIR= ./src
+OBJDIR= ./src
 
-CFLAGS = -std=gnu++98 -m64 -fopenmp -static -s -I./ -I./ext/tetgen -I./ext/mumps/include -I./ext/arma/include -I./ext/metis -I./ext/gmm -DTETLIBRARY
-LFLAGS = -std=gnu++98 -m64 -fopenmp -static -s -L./ext -lsmumps -ldmumps -lcmumps -lzmumps -lmumps_common -lmpiseq -lpord -lmetis -ltet -larpack -llapack -lopenblas -lgfortran -lquadmath -lpsapi -liphlpapi
-
-OBJS = $(addprefix $(OBJDIR)/, AssElStat.o AssLin.o AssLinDD.o AssLinSchur.o AssNL.o BC.o Coupl.o DoF.o Eigen.o EleMat.o EqSys.o Field.o HFSS.o Main.o Mesh.o Mtrl.o MUMPS.o Option.o Project.o Quad.o Rad.o Shape.o TetGen.o FE.rc.o)
+INCDIR = -I./src -I./dep/include
+LIBDIR-WIN = -L./dep/lib/x86_64-w64-mingw32/
+LIBDIR-LNX = -L./dep/lib/x86_64-linux-gnu/
 
 ifdef OS
    RM = del /F /S /Q
    FixPath = $(subst /,\,$1)
+   LIBDIR = $(LIBDIR-WIN)
 else
    ifeq ($(shell uname), Linux)
       RM = rm -f
       FixPath = $1
+      LIBDIR = $(LIBDIR-LNX)
    endif
 endif
 
+CFLAGS = $(INCDIR) -std=gnu++11 -m64 -O2 -fopenmp -static
+LFLAGS = $(LIBDIR) -m64 -fopenmp -static -s -lsmumps -ldmumps -lcmumps -lzmumps -lmumps_common -lmpiseq -lpord -lopenblas -larpack -lgfortran -lquadmath
+ 
+OBJS = $(addprefix $(OBJDIR)/, main.o model.o project.o solver.o)
+
 all: $(OBJS)
-	$(CC) -o $(BINDIR)/FE $(OBJS) $(LFLAGS)
+	$(CC) -o $(BINDIR)/fes $(OBJS) $(LFLAGS)
 
 $(OBJDIR)/%.o : $(SRCDIR)/%.cpp
 	$(CC) $(CFLAGS) -c  $< -o $@
-
-$(OBJDIR)/%.rc.o : $(SRCDIR)/%.rc
-	$(RES) $< -o $@
 
 .PHONY: clean
 clean:
