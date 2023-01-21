@@ -209,29 +209,29 @@ int project::get_num_proc() {
 //    return out.str();
 //}
 //
-//std::string project::get_proc_mem() {
-//    std::stringstream out;
-//    HANDLE hProcess = GetCurrentProcess();
-//    if (NULL == hProcess) {
-//        out << "Memory stats: Failed to acquire process handle";
-//        return out.str();
-//    }
-//    PROCESS_MEMORY_COUNTERS pmc;
-//    if (!GetProcessMemoryInfo(hProcess, &pmc, sizeof(pmc))) {
-//        out << "Memory stats: Failed to acquire process memory information";
-//    } else {
-//        double physiPeak = (double) pmc.PeakWorkingSetSize;
-//        double physiPres = (double) pmc.WorkingSetSize;
-//        out << "Used RAM: ";
-//        out << physiPres / 1048576;
-//        out << " MB |";
-//        out << physiPeak / 1048576;
-//        out << "|";
-//    }
-//    CloseHandle(hProcess);
-//    return out.str();
-//}
-//
+std::string project::get_proc_mem() {
+   std::stringstream out;
+   HANDLE hProcess = GetCurrentProcess();
+   if (NULL == hProcess) {
+       out << "Memory stats: Failed to acquire process handle";
+       return out.str();
+   }
+   PROCESS_MEMORY_COUNTERS pmc;
+   if (!GetProcessMemoryInfo(hProcess, &pmc, sizeof(pmc))) {
+       out << "Memory stats: Failed to acquire process memory information";
+   } else {
+       double physiPeak = (double) pmc.PeakWorkingSetSize;
+       double physiPres = (double) pmc.WorkingSetSize;
+       out << "Used RAM: ";
+       out << physiPres / 1048576;
+       out << " MB |";
+       out << physiPeak / 1048576;
+       out << "|";
+   }
+   CloseHandle(hProcess);
+   return out.str();
+}
+
 std::string project::get_sys_mem() {
     std::stringstream out;
 #ifdef __linux__
