@@ -17,6 +17,7 @@ OBJS = $(addprefix $(OBJDIR)/, main.o model.o project.o solver.o)
 
 fes: $(OBJS)
 	$(CC) -o $(BINDIR)/fes $(OBJS) $(LFLAGS)
+	$(BINDIR)/fes
 
 $(OBJDIR)/%.o : $(SRCDIR)/%.cpp
 	$(CC) $(CFLAGS) -c  $< -o $@

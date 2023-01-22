@@ -46,7 +46,7 @@ class project {
         REFINE_HOMOGENEOUSLY,
         ANALYZE
     } task;
-    project();
+    project(int, char**);
     ~project();
     mdl_core model; // all the model information is stored here
     std::string name = "";

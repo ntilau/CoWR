@@ -20,7 +20,8 @@
 #include "project.h"
 #include "solver.h"
 
-project::project() {
+project::project(int, char **)
+{
     task = NONE;
 }
 
