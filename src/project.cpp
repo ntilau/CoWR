@@ -6,25 +6,36 @@
 
 
 #ifdef __linux__
-    #include <unistd.h>
-    #include <thread>
+#include <unistd.h>
+#include <thread>
+#include <sys/time.h>
+#include <sys/resource.h>
 #elif _WIN32
-    #include <winsock2.h>
-    #include <windows.h>
-    #include <psapi.h>
-    #include <iphlpapi.h>
+#include <winsock2.h>
+#include <windows.h>
+#include <psapi.h>
+#include <iphlpapi.h>
 #else
-    #error "OS not supported!"
+#error "OS not supported!"
 #endif
 
 
 #include "project.h"
 #include "solver.h"
 
-project::project(int, char **)
+project::project(int argc, char ** argv)
 {
-    task = NONE;
+    full_path_name = argv[1];
+    task = LOAD_POLY;
+    execute_task();
+    int ret = system(std::string("tetgen -pqA " + full_path_name + ".poly").data());
+    task = RUN_TETGEN;
+    execute_task();
+    task = SAVE_FES;
+    execute_task();
+    
     std::cout << get_info() << std::endl;
+    std::cout << get_proc_mem() << std::endl;
 }
 
 project::~project() {
@@ -129,7 +140,6 @@ std::string project::get_info() {
     } else {
         tag << "OMP_NUM_THREADS      = " << cores; // automatically setting to the number of cores
     }
-    tag << "\n";
     return tag.str();
 }
 
@@ -197,36 +207,36 @@ std::string project::get_priority() {
    out << " priority process";
    return out.str();
 }
-
-
 #endif
 
 std::string project::get_proc_mem() {
     std::stringstream out;
+    double physiPeak, physiPres;
 #ifdef __linux__
-    const auto processor_count = std::thread::hardware_concurrency();
-    out << std::to_string(processor_count);
+    long pages = sysconf(_SC_PHYS_PAGES);
+    long page_size = sysconf(_SC_PAGE_SIZE);
+    int who = RUSAGE_SELF; 
+    struct rusage usage; 
+    int ret = getrusage(who,&usage);
+    physiPeak = pages * page_size / 1048576;
+    physiPres = usage.ru_maxrss / 1024;
 #elif _WIN32
-   HANDLE hProcess = GetCurrentProcess();
-   if (NULL == hProcess) {
-       out << "Memory stats: Failed to acquire process handle";
-       return out.str();
-   }
-   PROCESS_MEMORY_COUNTERS pmc;
-   if (!GetProcessMemoryInfo(hProcess, &pmc, sizeof(pmc))) {
-       out << "Memory stats: Failed to acquire process memory information";
-   } else {
-       double physiPeak = (double) pmc.PeakWorkingSetSize;
-       double physiPres = (double) pmc.WorkingSetSize;
-       out << "Used RAM: ";
-       out << physiPres / 1048576;
-       out << " MB |";
-       out << physiPeak / 1048576;
-       out << "|";
-   }
-   CloseHandle(hProcess);
+    HANDLE hProcess = GetCurrentProcess();
+    if (NULL == hProcess) {
+        out << "Memory stats: Failed to acquire process handle";
+        return out.str();
+    }
+    PROCESS_MEMORY_COUNTERS pmc;
+    if (!GetProcessMemoryInfo(hProcess, &pmc, sizeof(pmc))) {
+        out << "Memory stats: Failed to acquire process memory information";
+    } else {
+        physiPeak = (double) pmc.PeakWorkingSetSize / 1048576;
+        physiPres = (double) pmc.WorkingSetSize / 1048576;
+    }
+    CloseHandle(hProcess);
 #endif
-   return out.str();
+    out << "Used RAM: " <<  physiPres << " MB |" << physiPeak << "|";
+    return out.str();
 }
 
 std::string project::get_sys_mem() {
