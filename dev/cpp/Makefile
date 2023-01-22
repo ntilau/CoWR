@@ -1,5 +1,8 @@
 .SUFFIXES: .cpp .o
 
+# dependencies: sudo apt-get install mingw-w64 gfortran-mingw-w64 -y
+# may use wine to work on linux: sudo apt-get install wine
+
 ifdef OS
    CC=g++
    RES=windres
