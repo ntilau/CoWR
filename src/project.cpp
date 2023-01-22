@@ -6,7 +6,7 @@
 
 
 #ifdef __linux__
-// linux code goes here.
+#include <thread>
 #elif _WIN32
 #include <winsock2.h>
 #include <windows.h>
@@ -210,6 +210,10 @@ int project::get_num_proc() {
 //}
 //
 std::string project::get_proc_mem() {
+#ifdef __linux__
+    const auto processor_count = std::thread::hardware_concurrency();
+    return std::to_string(processor_count);
+#elif _WIN32
    std::stringstream out;
    HANDLE hProcess = GetCurrentProcess();
    if (NULL == hProcess) {
@@ -230,6 +234,7 @@ std::string project::get_proc_mem() {
    }
    CloseHandle(hProcess);
    return out.str();
+#endif
 }
 
 std::string project::get_sys_mem() {

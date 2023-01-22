@@ -8,6 +8,7 @@ OBJDIR= ./obj
 
 #INCDIR = -I./src -I./dep/include
 INCDIR = -I./src -I./dep/include -I./dep/include/vtk -I./dep/lib/x86_64-w64-mingw32/mswu
+#INCDIR = -I./dep/include/vtk -I/usr/lib/x86_64-linux-gnu/wx/include/gtk3-unicode-3.0 -I/usr/include/wx-3.0 -D_FILE_OFFSET_BITS=64 -DWXUSINGDLL -D__WXGTK__ -pthread
 LIBDIR-WIN = -L./dep/lib/x86_64-w64-mingw32
 LIBDIR-LNX = -L./dep/lib/x86_64-linux-gnu
 
@@ -19,6 +20,8 @@ LIBVTK = -lvtkRenderingOpenGL2 -lvtkRenderingVolumeOpenGL2 -lvtkRenderingVolume 
 
 WXCFLAGS = $(INCDIR) -std=gnu++11 -m64 -O2 -pthread -static -fopenmp -DNDEBUG -D_FILE_OFFSET_BITS=64 -DWX_PRECOMP -fno-common -fpermissive -Wall -Wundef -Wunused-parameter -Wno-ctor-dtor-privacy -Woverloaded-virtual -Wno-deprecated-declarations
 WXLFLAGS = $(LIBDIR) -m64 -fopenmp -static -s $(LIBALG) $(LIBWX) $(LIBVTK) $(LIBWIN)
+#WXLFLAGS = $(LIBDIR) -m64 -fopenmp -static -s -L/usr/lib/x86_64-linux-gnu -pthread   -lwx_gtk3u_xrc-3.0 -lwx_gtk3u_html-3.0 -lwx_gtk3u_qa-3.0 -lwx_gtk3u_adv-3.0 -lwx_gtk3u_core-3.0 -lwx_baseu_xml-3.0 -lwx_baseu_net-3.0 -lwx_baseu-3.0
+
 
 WXOBJS = $(addprefix $(OBJDIR)/, wxfes.o model.o project.o solver.o wxVTKRenderWindowInteractor.o)
 
@@ -40,7 +43,7 @@ LFLAGS = $(LIBDIR) -m64 -fopenmp -static -s -lsmumps -ldmumps -lcmumps -lzmumps 
 OBJS = $(addprefix $(OBJDIR)/, main.o model.o project.o solver.o)
 
 fes: $(OBJS)
-	$(CC) -o $(BINDIR)/fes $(OBJS) $(LFLAGS)
+	$(CC) -o $(BINDIR)/fes $(OBJS) $(WXLFLAGS)
 
 wxfes: $(WXOBJS)
 	$(CC) -o $(BINDIR)/wxfes $(WXOBJS) $(WXLFLAGS)
