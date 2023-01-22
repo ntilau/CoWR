@@ -68,6 +68,7 @@ class project {
   private:
     std::string get_var(const std::string name);
     int get_int(const std::string name);
+    void parser(int, char **);
 };
 
 #endif // PROJECT_H

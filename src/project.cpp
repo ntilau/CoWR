@@ -6,14 +6,15 @@
 
 
 #ifdef __linux__
-#include <thread>
+    #include <unistd.h>
+    #include <thread>
 #elif _WIN32
-#include <winsock2.h>
-#include <windows.h>
-#include <psapi.h>
-#include <iphlpapi.h>
+    #include <winsock2.h>
+    #include <windows.h>
+    #include <psapi.h>
+    #include <iphlpapi.h>
 #else
-#error "OS not supported!"
+    #error "OS not supported!"
 #endif
 
 
@@ -23,6 +24,7 @@
 project::project(int, char **)
 {
     task = NONE;
+    std::cout << get_info() << std::endl;
 }
 
 project::~project() {
@@ -87,135 +89,124 @@ void project::execute_task() {
     }
 }
 
+void project::parser(int, char **)
+{
+
+    
+}
+
+
 std::string project::get_info() {
-//    std::stringstream tag;
-//    std::string name = get_var("COMPUTERNAME");
-//    if (name.size() != 0) {
-//        tag << "COMPUTERNAME         = " << name;
-//    } else {
-//        tag << "COMPUTERNAME         = ?";
-//    }
-//    tag << "\n";
-//    std::string cores = get_var("NUMBER_OF_PROCESSORS");
-//    if (cores.size() != 0) {
-//        tag << "NUMBER_OF_PROCESSORS = " << cores;
-//    } else {
-//        tag << "NUMBER_OF_PROCESSORS = ?";
-//    }
-//    tag << "\n";
-//    std::string threads = get_var("OMP_NUM_THREADS");
-//    if (threads.size() != 0) {
-//        tag << "OMP_NUM_THREADS      = " << threads;
-//    } else {
-//        tag << "OMP_NUM_THREADS      = " << cores; // automatically setting to the number of cores
-//    }
-//    tag << "\n";
-    return "hello";//tag.str();
+   std::stringstream tag;
+   std::string name, cores, threads;
+#ifdef __linux__
+    char hostname[HOST_NAME_MAX];
+    char username[LOGIN_NAME_MAX];
+    gethostname(hostname, HOST_NAME_MAX);
+    getlogin_r(username, LOGIN_NAME_MAX);
+    name = std::string(hostname);
+    cores = std::to_string(std::thread::hardware_concurrency());
+    threads = std::to_string(std::thread::hardware_concurrency());
+#elif _WIN32
+    name = get_var("COMPUTERNAME");
+    cores = get_var("NUMBER_OF_PROCESSORS");
+    threads = get_var("OMP_NUM_THREADS");
+#endif
+    if (name.size() != 0) {
+        tag << "COMPUTERNAME         = " << name;
+    } else {
+        tag << "COMPUTERNAME         = ?";
+    }
+    tag << "\n";
+    if (cores.size() != 0) {
+        tag << "NUMBER_OF_PROCESSORS = " << cores;
+    } else {
+        tag << "NUMBER_OF_PROCESSORS = ?";
+    }
+    tag << "\n";
+    if (threads.size() != 0) {
+        tag << "OMP_NUM_THREADS      = " << threads;
+    } else {
+        tag << "OMP_NUM_THREADS      = " << cores; // automatically setting to the number of cores
+    }
+    tag << "\n";
+    return tag.str();
 }
 
 int project::get_num_proc() {
-    return 1;//atoi(get_var("NUMBER_OF_PROCESSORS").data());
+    unsigned int processor_count = 0;
+#ifdef __linux__
+    processor_count = std::thread::hardware_concurrency();
+#elif _WIN32
+    processor_count = atoi(get_var("NUMBER_OF_PROCESSORS").data());
+#endif
+    return processor_count;
 }
 
-//std::string project::get_var(const std::string name) {
-//    char* ptr = getenv(name.c_str());
-//    std::string ret;
-//    if (ptr == NULL) {
-//        ret = std::string("");
-//    } else {
-//        ret = std::string(ptr);
-//    }
-//    return ret;
-//}
+#ifdef _WIN32
+std::string project::get_var(const std::string name) {
+   char* ptr = getenv(name.c_str());
+   std::string ret;
+   if (ptr == NULL) {
+       ret = std::string("");
+   } else {
+       ret = std::string(ptr);
+   }
+   return ret;
+}
 
-//int project::get_int(const std::string name) {
-//    const std::string data = get_var(name);
-//    int ret = -1;
-//    if (data.size() != 0) {
-//        ret = atoi(data.c_str());
-//    }
-//    return ret;
-//}
-//
-//std::vector<std::string> project::get_mac() {
-//    std::vector<std::string> vMacAddresses;
-//    IP_ADAPTER_INFO AdapterInfo[32];        // Allocate information for up to 32 NICs
-//    DWORD dwBufLen = sizeof(AdapterInfo);   // Save memory size of buffer
-//    DWORD dwStatus = GetAdaptersInfo(       // Call GetAdapterInfo
-//                         AdapterInfo,       // [out] buffer to receive data
-//                         &dwBufLen);        // [in] size of receive data buffer
-//    // No network card? Other error?
-//    if (dwStatus != ERROR_SUCCESS) {
-//        return vMacAddresses;
-//    }
-//    PIP_ADAPTER_INFO pAdapterInfo = AdapterInfo;
-//    char szBuffer[512];
-//    while (pAdapterInfo) {
-//        if (pAdapterInfo->Type == MIB_IF_TYPE_ETHERNET) {
-//            snprintf(szBuffer, sizeof(szBuffer),
-//                     "%.2x-%.2x-%.2x-%.2x-%.2x-%.2x", pAdapterInfo->Address[0],
-//                     pAdapterInfo->Address[1], pAdapterInfo->Address[2],
-//                     pAdapterInfo->Address[3], pAdapterInfo->Address[4],
-//                     pAdapterInfo->Address[5]);
-//            vMacAddresses.push_back(std::string(szBuffer));
-//        }
-//        pAdapterInfo = pAdapterInfo->Next;
-//    }
-//    return vMacAddresses;
-//}
-//
-//bool project::check_mac() {
-//    bool found = false;
-//    std::vector<std::string> vMacAddresses = get_mac();
-//    for (size_t i = 0; i < vMacAddresses.size(); i++) {
-//        if (vMacAddresses[i] == "00-00-00-00-00-00") {
-//            std::cout << "Welcome 00-00-00-00-00-00!\n";
-//            found |= true;
-//        }
-//    }
-//    return found;
-//}
+int project::get_int(const std::string name) {
+   const std::string data = get_var(name);
+   int ret = -1;
+   if (data.size() != 0) {
+       ret = atoi(data.c_str());
+   }
+   return ret;
+}
 
-//std::string project::set_priority(unsigned int lvl) {
-//    HANDLE process = GetCurrentProcess();
-//    switch (lvl) {
-//    case 0:
-//        SetPriorityClass(process, NORMAL_PRIORITY_CLASS);
-//        break;
-//    case 1:
-//        SetPriorityClass(process, HIGH_PRIORITY_CLASS);
-//        break;
-//    case 2:
-//        SetPriorityClass(process, REALTIME_PRIORITY_CLASS);
-//        break;
-//    default:
-//        SetPriorityClass(process, NORMAL_PRIORITY_CLASS);
-//    }
-//    return get_priority();
-//}
+std::string project::set_priority(unsigned int lvl) {
+   HANDLE process = GetCurrentProcess();
+   switch (lvl) {
+   case 0:
+       SetPriorityClass(process, NORMAL_PRIORITY_CLASS);
+       break;
+   case 1:
+       SetPriorityClass(process, HIGH_PRIORITY_CLASS);
+       break;
+   case 2:
+       SetPriorityClass(process, REALTIME_PRIORITY_CLASS);
+       break;
+   default:
+       SetPriorityClass(process, NORMAL_PRIORITY_CLASS);
+   }
+   return get_priority();
+}
 
-//std::string project::get_priority() {
-//    DWORD dwPriClass = GetPriorityClass(GetCurrentProcess());
-//    std::stringstream out;
-//    if (dwPriClass == REALTIME_PRIORITY_CLASS) {
-//        out << "REALTIME";
-//    } else if (dwPriClass == HIGH_PRIORITY_CLASS) {
-//        out << "HIGH";
-//    } else if (dwPriClass == NORMAL_PRIORITY_CLASS) {
-//        out << "NORMAL";
-//    } else {
-//        out << "level = " << dwPriClass;
-//    }
-//    out << " priority process";
-//    return out.str();
-//}
-//
+std::string project::get_priority() {
+   DWORD dwPriClass = GetPriorityClass(GetCurrentProcess());
+   std::stringstream out;
+   if (dwPriClass == REALTIME_PRIORITY_CLASS) {
+       out << "REALTIME";
+   } else if (dwPriClass == HIGH_PRIORITY_CLASS) {
+       out << "HIGH";
+   } else if (dwPriClass == NORMAL_PRIORITY_CLASS) {
+       out << "NORMAL";
+   } else {
+       out << "level = " << dwPriClass;
+   }
+   out << " priority process";
+   return out.str();
+}
+
+
+#endif
+
 std::string project::get_proc_mem() {
+    std::stringstream out;
 #ifdef __linux__
     const auto processor_count = std::thread::hardware_concurrency();
-    return std::to_string(processor_count);
+    out << std::to_string(processor_count);
 #elif _WIN32
-   std::stringstream out;
    HANDLE hProcess = GetCurrentProcess();
    if (NULL == hProcess) {
        out << "Memory stats: Failed to acquire process handle";
@@ -234,8 +225,8 @@ std::string project::get_proc_mem() {
        out << "|";
    }
    CloseHandle(hProcess);
-   return out.str();
 #endif
+   return out.str();
 }
 
 std::string project::get_sys_mem() {
