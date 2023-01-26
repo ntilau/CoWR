@@ -3,6 +3,6 @@
 #include <iostream>
 
 int main(int argc, char *argv[]) {
-  project p(argc, argv);
-  return EXIT_SUCCESS;
+    project p(argc, argv);
+    return EXIT_SUCCESS;
 }
