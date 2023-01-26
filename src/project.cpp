@@ -88,7 +88,7 @@ void project::execute_task() {
             break;
         case LOAD_CDNS:
             std::cout << "Loading " << name << ".mesh\n";
-            model.msh.read_cdns_files(full_path_name);
+            model.wrap_cdns(full_path_name, aux_path);
             break;
         case RUN_TETGEN:
             std::cout << "Loading " << name << ".poly products\n";

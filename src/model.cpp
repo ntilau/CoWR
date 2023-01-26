@@ -835,7 +835,6 @@ void mdl_msh::read_cdns_files(std::string &name){
                 tet_lab.resize(n_tetras);
                 for (size_t i = 0; i < n_tetras; i++) {
                     getline(msh_in_file, line);
-                    std::cout << line << std::endl;
                     iss.clear();
                     iss.str(line);
                     tet_nodes[i].resize(4);
