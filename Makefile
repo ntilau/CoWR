@@ -13,10 +13,10 @@ OBJDIR = ./obj
 ARGS = #$(BINDIR)/RectangularWG +freq 1e10
 
 CFLAGS = $(INCDIR) -std=gnu++11 -m64 -O2 -fopenmp -static
-LFLAGS = $(LIBDIR) -m64 -fopenmp -static -s #\
-	#-lsmumps -ldmumps -lcmumps -lzmumps -lmumps_common -lmpiseq_seq -lpord \
-	#-lopenblas -larpack -lgfortran -lquadmath
-OBJS = $(addprefix $(OBJDIR)/, main.o model.o project.o) # solver.o)
+LFLAGS = $(LIBDIR) -m64 -fopenmp -static -s \
+	-lsmumps -ldmumps -lcmumps -lzmumps -lmumps_common -lmpiseq_seq -lpord \
+	-lopenblas -larpack -lgfortran -lquadmath
+OBJS = $(addprefix $(OBJDIR)/, main.o model.o project.o solver.o)
 
 all: $(OBJDIR) $(BIN)
 
