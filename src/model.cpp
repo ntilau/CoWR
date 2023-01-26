@@ -767,7 +767,6 @@ void mdl_msh::read_cdns_files(std::string &name){
                 iss.clear();
                 iss.str(line);
                 iss >> n_nodes;
-                std::cout << n_nodes << "\n";
                 nod_pos.resize(n_nodes);
                 for (size_t i = 0; i < n_nodes; i++) {
                     getline(msh_in_file, line);
@@ -786,7 +785,6 @@ void mdl_msh::read_cdns_files(std::string &name){
                 iss.clear();
                 iss.str(line);
                 iss >> n_edges;
-                std::cout << n_edges << "\n";
                 edg_nodes.resize(n_edges);
                 edg_lab.resize(n_edges);
                 for (size_t i = 0; i < n_edges; i++) {
@@ -807,7 +805,6 @@ void mdl_msh::read_cdns_files(std::string &name){
                 iss.clear();
                 iss.str(line);
                 iss >> n_faces;
-                std::cout << n_faces << "\n";
                 fac_nodes.resize(n_faces);
                 fac_lab.resize(n_faces);
                 for (size_t i = 0; i < n_faces; i++) {
@@ -830,7 +827,6 @@ void mdl_msh::read_cdns_files(std::string &name){
                 iss.clear();
                 iss.str(line);
                 iss >> n_tetras;
-                std::cout << n_tetras << "\n";
                 tet_nodes.resize(n_tetras);
                 tet_lab.resize(n_tetras);
                 for (size_t i = 0; i < n_tetras; i++) {
@@ -854,34 +850,6 @@ void mdl_msh::read_cdns_files(std::string &name){
     }
     msh_in_file.close();
     regularize_mesh();
-    // get_bounding_info();
-
-    // std::map<std::pair<size_t, size_t>, size_t> edgesMap;
-    // std::map<std::tuple<size_t, size_t, size_t>, size_t> facesMap;
-    // std::vector<std::pair<size_t, size_t> > new_edges;
-    // std::vector<std::tuple<size_t, size_t, size_t> > new_faces;
-
-    // for (size_t i = 0; i < n_tetras; i++) {
-    //         std::sort(tet_nodes[i].begin(), tet_nodes[i].end());
-    //         new_edges.push_back(std::make_pair(tet_nodes[i][0], tet_nodes[i][1]));
-    //         new_edges.push_back(std::make_pair(tet_nodes[i][0], tet_nodes[i][2]));
-    //         new_edges.push_back(std::make_pair(tet_nodes[i][0], tet_nodes[i][3]));
-    //         new_edges.push_back(std::make_pair(tet_nodes[i][1], tet_nodes[i][2]));
-    //         new_edges.push_back(std::make_pair(tet_nodes[i][1], tet_nodes[i][3]));
-    //         new_edges.push_back(std::make_pair(tet_nodes[i][2], tet_nodes[i][3]));
-    //         new_faces.push_back(std::make_tuple(tet_nodes[i][1], tet_nodes[i][2], tet_nodes[i][3]));
-    //         new_faces.push_back(std::make_tuple(tet_nodes[i][0], tet_nodes[i][2], tet_nodes[i][3]));
-    //         new_faces.push_back(std::make_tuple(tet_nodes[i][0], tet_nodes[i][1], tet_nodes[i][3]));
-    //         new_faces.push_back(std::make_tuple(tet_nodes[i][0], tet_nodes[i][1], tet_nodes[i][2]));
-    // }
-    // sort(new_edges.begin(), new_edges.end());
-    // auto edg_lst = unique(new_edges.begin(), new_edges.end());
-    // new_edges.erase(edg_lst, new_edges.end());
-    // sort(new_faces.begin(), new_faces.end());
-    // auto fac_lst = unique(new_faces.begin(), new_faces.end());
-    // new_faces.erase(fac_lst, new_faces.end());
-    // std::cout << "Real edges == " << new_edges.size() << "\n";
-    // std::cout << "Real faces == " << new_faces.size() << "\n";
 }
 
 void mdl_msh::read_tetgen_files(std::string& name) {
@@ -1523,8 +1491,7 @@ void mdl_msh::save_vtk_mesh(std::string vtkMshName) {
     out_vol_msh << "SCALARS " << "Materials int 1\n";
     out_vol_msh << "LOOKUP_TABLE default\n";
     for (size_t i = 0; i < n_tetras; i++) {
-        out_vol_msh << 1 << "\n"; 
-        // tet_lab[i] */ << "\n";
+        out_vol_msh << tet_lab[i] << "\n";
     }
     out_vol_msh.close();
     
