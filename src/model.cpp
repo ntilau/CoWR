@@ -14,19 +14,21 @@ mdl_sld::mdl_sld() {
 mdl_sld::~mdl_sld() {
 }
 
+
+
 double mdl_sld::get_geom_dim() {
-    double dim = 0;
-    for (unsigned int i = 0; i < nodes.size(); i++) {
-        dim = std::max(dim, std::abs(nodes[i][0]));
-        dim = std::max(dim, std::abs(nodes[i][1]));
-        dim = std::max(dim, std::abs(nodes[i][2]));
-    }
-    dim *= 1e-1;
-    for (int i = -15; i < 15; i++) {
-        if (dim < pow(10, double(i)))
-            return pow(10, double(i));
-    }
-    return 0;
+    double dimx, dimy, dimz;
+    std::vector<std::vector<double> > transpose(3, std::vector<double>(nodes.size()));
+    for (unsigned int i = 0; i < nodes.size(); i++)
+        for (unsigned int j=0; j < 3; j++)
+            transpose[j][i] = nodes[i][j];
+    dimx = *std::max_element(transpose[0].begin(),transpose[0].end()) - 
+        *std::min_element(transpose[0].begin(),transpose[0].end());
+    dimy = *std::max_element(transpose[1].begin(),transpose[1].end()) - 
+        *std::min_element(transpose[1].begin(),transpose[1].end());
+    dimz = *std::max_element(transpose[2].begin(),transpose[2].end()) - 
+        *std::min_element(transpose[2].begin(),transpose[2].end());
+    return dimx*dimy*dimz;
 }
 
 bool mdl_sld::read_stl_file(std::string& name) {
