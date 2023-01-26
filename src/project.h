@@ -38,6 +38,7 @@ class project {
         SAVE_FES,
         LOAD_HFSS,
         LOAD_AEDT,
+        LOAD_CDNS,
         LOAD_POLY,
         SAVE_POLY,
         LOAD_STL,

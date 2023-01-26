@@ -124,6 +124,7 @@ class mdl_msh {
     void get_bounding_info();
     void write_prj_file(std::string& name);
     void read_prj_file(std::string& name);
+    void read_cdns_files(std::string& name);
     void read_tetgen_files(std::string& name);
     void read_triangle_files(std::string& name);
     void save_vtk_mesh(std::string);
@@ -153,7 +154,7 @@ class mdl_msh {
     std::vector<std::vector<size_t> > edg_adj_fac;
     std::vector<std::vector<size_t> > dom_tetras;
     std::vector<std::vector<size_t> > dom_faces;
-    size_t n_nodes, n_edges, n_faces, n_tetras, n_domains;
+    size_t n_nodes=0, n_edges=0, n_faces=0, n_tetras=0, n_domains=0;
     int max_edg_marker = -SIZE_MAX,
         max_fac_marker = -SIZE_MAX,
         max_tet_marker = -SIZE_MAX;
@@ -219,6 +220,7 @@ class mdl_core {
     mdl_msh msh;
     void wrap_hfss(std::string& data_path, std::string& name);
     void wrap_aedt(std::string& data_path, std::string& name);
+    void wrap_cdns(std::string& data_path, std::string& name);
     void create_tri_mesh();
     void clear() {
         sld.clear();

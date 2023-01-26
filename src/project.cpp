@@ -23,19 +23,30 @@
 #include "project.h"
 #include "solver.h"
 
-project::project(int argc, char ** argv)
+project::project(int argc, char ** argv) // parse and execute
 {
-    full_path_name = argv[1];
-    task = LOAD_POLY;
-    execute_task();
-    int ret = system(std::string("tetgen -pqA " + full_path_name + ".poly").data());
-    task = RUN_TETGEN;
-    execute_task();
-    task = SAVE_FES;
-    execute_task();
+    if (argc > 1) {
+        full_path_name = argv[1];
+        name = full_path_name;
+        task = LOAD_CDNS;
+        execute_task();
+    }
+
     
-    std::cout << get_info() << std::endl;
-    std::cout << get_proc_mem() << std::endl;
+    // task = LOAD_POLY;
+    // execute_task();
+    // int ret = system(std::string("tetgen -pqA " + full_path_name + ".poly").data());
+    // task = RUN_TETGEN;
+    // execute_task();
+    //task = SAVE_FES;
+    //execute_task();
+    
+    // model.msh.save_vtk_mesh(name);
+    model.msh.get_mesh_statistics();
+    
+    //std::cout << get_info() << std::endl;
+    //std::cout << get_proc_mem() << std::endl;
+
 }
 
 project::~project() {
@@ -75,6 +86,10 @@ void project::execute_task() {
             std::cout << "Loading " << name << ".aedt\n";
             model.wrap_aedt(full_path_name, aux_path);
             break;
+        case LOAD_CDNS:
+            std::cout << "Loading " << name << ".mesh\n";
+            model.msh.read_cdns_files(full_path_name);
+            break;
         case RUN_TETGEN:
             std::cout << "Loading " << name << ".poly products\n";
             model.msh.read_tetgen_files(full_path_name);
@@ -93,7 +108,7 @@ void project::execute_task() {
         }
         if (task == ANALYZE) {
             std::cout << "Running solver\n";
-            solver sol(model);
+            //solver sol(model);
         }
     } catch (std::string& str) {
         std::cout << "Error: " << str << "\n";
@@ -175,6 +190,7 @@ int project::get_int(const std::string name) {
 }
 
 std::string project::set_priority(unsigned int lvl) {
+    // setpriority(PRIO_PROCESS, 0, -20);
    HANDLE process = GetCurrentProcess();
    switch (lvl) {
    case 0:

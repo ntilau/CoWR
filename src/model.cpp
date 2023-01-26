@@ -738,6 +738,153 @@ void mdl_msh::read_prj_file(std::string& name) {
     regularize_mesh();
 }
 
+void mdl_msh::read_cdns_files(std::string &name){
+    clear();
+    std::ifstream msh_in_file(std::string(name + ".mesh").c_str(), std::ios::in);
+    std::string line;
+    std::istringstream iss;
+    unsigned int tmp_uint;
+    double tmp_dbl;
+    std::string tmp_str;
+    if (msh_in_file.is_open() ) {
+        while (getline(msh_in_file, line)) {
+            iss.clear();
+            iss.str(line);
+            iss >> tmp_str;
+            if (strcmp(tmp_str.data(), "Dimension") == 0) {
+                getline(msh_in_file, line);
+                iss.clear();
+                iss.str(line);
+                iss >> tmp_uint;
+                if (tmp_uint == 3)
+                    type = "TETRA";
+                else if (tmp_uint == 2)
+                    type = "TRIA";
+                tmp_str.clear();
+            }
+            if (strcmp(tmp_str.data(), "Vertices") == 0) {
+                getline(msh_in_file, line);
+                iss.clear();
+                iss.str(line);
+                iss >> n_nodes;
+                std::cout << n_nodes << "\n";
+                nod_pos.resize(n_nodes);
+                for (size_t i = 0; i < n_nodes; i++) {
+                    getline(msh_in_file, line);
+                    iss.clear();
+                    iss.str(line);
+                    nod_pos[i].resize(3);
+                    iss >> nod_pos[i][0];
+                    iss >> nod_pos[i][1];
+                    iss >> nod_pos[i][2];
+                    iss >> tmp_uint;
+                }
+                tmp_str.clear();
+            }
+            if (strcmp(tmp_str.data(), "Edges") == 0) {
+                getline(msh_in_file, line);
+                iss.clear();
+                iss.str(line);
+                iss >> n_edges;
+                std::cout << n_edges << "\n";
+                edg_nodes.resize(n_edges);
+                edg_lab.resize(n_edges);
+                for (size_t i = 0; i < n_edges; i++) {
+                    getline(msh_in_file, line);
+                    iss.clear();
+                    iss.str(line);
+                    edg_nodes[i].resize(2);
+                    iss >> edg_nodes[i][0];
+                    edg_nodes[i][0]-=1;
+                    iss >> edg_nodes[i][1];
+                    edg_nodes[i][1]-=1;
+                    iss >> edg_lab[i];
+                }
+                tmp_str.clear();
+            }
+            if (strcmp(tmp_str.data(), "Triangles") == 0) {
+                getline(msh_in_file, line);
+                iss.clear();
+                iss.str(line);
+                iss >> n_faces;
+                std::cout << n_faces << "\n";
+                fac_nodes.resize(n_faces);
+                fac_lab.resize(n_faces);
+                for (size_t i = 0; i < n_faces; i++) {
+                    getline(msh_in_file, line);
+                    iss.clear();
+                    iss.str(line);
+                    fac_nodes[i].resize(3);
+                    iss >> fac_nodes[i][0];
+                    fac_nodes[i][0]-=1;
+                    iss >> fac_nodes[i][1];
+                    fac_nodes[i][1]-=1;
+                    iss >> fac_nodes[i][2];
+                    fac_nodes[i][2]-=1;
+                    iss >> fac_lab[i];
+                }
+                tmp_str.clear();
+            }
+            if (strcmp(tmp_str.data(), "Tetrahedra") == 0) {
+                getline(msh_in_file, line);
+                iss.clear();
+                iss.str(line);
+                iss >> n_tetras;
+                std::cout << n_tetras << "\n";
+                tet_nodes.resize(n_tetras);
+                tet_lab.resize(n_tetras);
+                for (size_t i = 0; i < n_tetras; i++) {
+                    getline(msh_in_file, line);
+                    std::cout << line << std::endl;
+                    iss.clear();
+                    iss.str(line);
+                    tet_nodes[i].resize(4);
+                    iss >> tet_nodes[i][0];
+                    tet_nodes[i][0]-=1;
+                    iss >> tet_nodes[i][1];
+                    tet_nodes[i][1]-=1;
+                    iss >> tet_nodes[i][2];
+                    tet_nodes[i][2]-=1;
+                    iss >> tet_nodes[i][3];
+                    tet_nodes[i][3]-=1;
+                    iss >> tet_lab[i];
+                }
+                tmp_str.clear();
+            }
+        }
+    }
+    msh_in_file.close();
+    regularize_mesh();
+    // get_bounding_info();
+
+    // std::map<std::pair<size_t, size_t>, size_t> edgesMap;
+    // std::map<std::tuple<size_t, size_t, size_t>, size_t> facesMap;
+    // std::vector<std::pair<size_t, size_t> > new_edges;
+    // std::vector<std::tuple<size_t, size_t, size_t> > new_faces;
+
+    // for (size_t i = 0; i < n_tetras; i++) {
+    //         std::sort(tet_nodes[i].begin(), tet_nodes[i].end());
+    //         new_edges.push_back(std::make_pair(tet_nodes[i][0], tet_nodes[i][1]));
+    //         new_edges.push_back(std::make_pair(tet_nodes[i][0], tet_nodes[i][2]));
+    //         new_edges.push_back(std::make_pair(tet_nodes[i][0], tet_nodes[i][3]));
+    //         new_edges.push_back(std::make_pair(tet_nodes[i][1], tet_nodes[i][2]));
+    //         new_edges.push_back(std::make_pair(tet_nodes[i][1], tet_nodes[i][3]));
+    //         new_edges.push_back(std::make_pair(tet_nodes[i][2], tet_nodes[i][3]));
+    //         new_faces.push_back(std::make_tuple(tet_nodes[i][1], tet_nodes[i][2], tet_nodes[i][3]));
+    //         new_faces.push_back(std::make_tuple(tet_nodes[i][0], tet_nodes[i][2], tet_nodes[i][3]));
+    //         new_faces.push_back(std::make_tuple(tet_nodes[i][0], tet_nodes[i][1], tet_nodes[i][3]));
+    //         new_faces.push_back(std::make_tuple(tet_nodes[i][0], tet_nodes[i][1], tet_nodes[i][2]));
+    // }
+    // sort(new_edges.begin(), new_edges.end());
+    // auto edg_lst = unique(new_edges.begin(), new_edges.end());
+    // new_edges.erase(edg_lst, new_edges.end());
+    // sort(new_faces.begin(), new_faces.end());
+    // auto fac_lst = unique(new_faces.begin(), new_faces.end());
+    // new_faces.erase(fac_lst, new_faces.end());
+    // std::cout << "Real edges == " << new_edges.size() << "\n";
+    // std::cout << "Real faces == " << new_faces.size() << "\n";
+}
+
 void mdl_msh::read_tetgen_files(std::string& name) {
     clear();
     type = "TETRA";
@@ -1375,11 +1522,13 @@ void mdl_msh::save_vtk_mesh(std::string vtkMshName) {
     }
     out_vol_msh << "CELL_DATA " << n_tetras << "\n";
     out_vol_msh << "SCALARS " << "Materials int 1\n";
-    out_vol_msh << "LOOKUP_TABLE jet\n";
+    out_vol_msh << "LOOKUP_TABLE default\n";
     for (size_t i = 0; i < n_tetras; i++) {
-        out_vol_msh << tet_lab[i] << "\n";
+        out_vol_msh << 1 << "\n"; 
+        // tet_lab[i] */ << "\n";
     }
     out_vol_msh.close();
+    
     std::ofstream out_srf_msh(std::string(vtkMshName + "_srfmsh.vtk").data());
     out_srf_msh << "# vtk DataFile Version 2.0\n";
     out_srf_msh << "Mesh data\n";
@@ -1408,7 +1557,7 @@ void mdl_msh::save_vtk_mesh(std::string vtkMshName) {
     }
     out_srf_msh << "CELL_DATA " << n_bc_mtrl_faces << "\n";
     out_srf_msh << "SCALARS " << "Boundaries int 1\n";
-    out_srf_msh << "LOOKUP_TABLE jet\n";
+    out_srf_msh << "LOOKUP_TABLE default\n";
     for (size_t i = 0; i < n_faces; i++) {
         if (fac_lab[i] != -1)
             out_srf_msh << fac_lab[i] << "\n";
@@ -3593,6 +3742,12 @@ void mdl_core::wrap_aedt(std::string& name, std::string& aux_path) {
     }
 }
 
+void mdl_core::wrap_cdns(std::string &data_path, std::string &name)
+{
+    msh.clear();
+    msh.read_cdns_files(data_path);
+    msh.save_vtk_mesh(data_path);
+}
 
 void mdl_core::create_tri_mesh() {
     msh.clear();
