@@ -178,7 +178,8 @@ public:
 class mdl_frm {
 public:
     std::vector<std::list<std::string>> bc_type = {
-        {   "None", "PerfectE", "PerfectH", "Radiation", "WavePort", "Impedance",
+        {
+            "None", "PerfectE", "PerfectH", "Radiation", "WavePort", "Impedance",
             "LumpedPort", "LumpedRLC"
         },
         {"None", "Voltage"},

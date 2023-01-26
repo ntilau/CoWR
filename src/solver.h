@@ -87,9 +87,9 @@ public:
     sp_vec<T> operator*(const sp_vec<T> &vec) {
         sp_vec<T> tmp;
         for (typename sp_mat<T>::iterator itr = this->begin(); itr != this->end();
-                itr++) {
+             itr++) {
             for (typename sp_vec<T>::iterator itc = itr->begin(); itc != itr->end();
-                    itc++) {
+                 itc++) {
                 T val = itc->val * vec[itc->idx];
                 if (val != T(0))
                     tmp[itr - this->begin()] += val;
@@ -100,16 +100,16 @@ public:
     size_t nnz() {
         size_t tmp = 0;
         for (typename sp_mat<T>::iterator itr = this->begin(); itr != this->end();
-                itr++)
+             itr++)
             tmp += itr->nnz();
         return tmp;
     }
     void save(std::string name) {
         std::ofstream mat_file(name.data());
         for (typename sp_mat<T>::iterator itr = this->begin(); itr != this->end();
-                itr++) {
+             itr++) {
             for (typename sp_vec<T>::iterator itc = itr->begin(); itc != itr->end();
-                    itc++) {
+                 itc++) {
                 mat_file << itr - this->begin() + 1 << " " << itc->idx + 1 << " "
                          << std::setprecision(16) << itc->val << "\n";
             }
@@ -122,7 +122,7 @@ template <typename T> std::ostream &operator<<(std::ostream &out, sp_mat<T> v) {
     out << "sparse matrix\n";
     for (typename sp_mat<T>::iterator itr = v.begin(); itr != v.end(); itr++) {
         for (typename sp_vec<T>::iterator itc = itr->begin(); itc != itr->end();
-                itc++) {
+             itc++) {
             out << "[" << itr - v.begin() << "][" << itc->idx << "]=" << itc->val
                 << "\n";
         }

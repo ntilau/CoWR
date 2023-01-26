@@ -79,7 +79,7 @@ bool mdl_sld::read_stl_file(std::string &name) {
                 iss >> tmp_pnt[1]; // v1y
                 iss >> tmp_pnt[2]; // v1z
                 if (nod_map.find(std::make_tuple(tmp_pnt[0], tmp_pnt[1], tmp_pnt[2])) ==
-                        nod_map.end()) {
+                    nod_map.end()) {
                     nod_map[std::make_tuple(tmp_pnt[0], tmp_pnt[1], tmp_pnt[2])] =
                         nod_cnt++;
                 }
@@ -93,7 +93,7 @@ bool mdl_sld::read_stl_file(std::string &name) {
                 iss >> tmp_pnt[1]; // v2y
                 iss >> tmp_pnt[2]; // v2z
                 if (nod_map.find(std::make_tuple(tmp_pnt[0], tmp_pnt[1], tmp_pnt[2])) ==
-                        nod_map.end()) {
+                    nod_map.end()) {
                     nod_map[std::make_tuple(tmp_pnt[0], tmp_pnt[1], tmp_pnt[2])] =
                         nod_cnt++;
                 }
@@ -107,7 +107,7 @@ bool mdl_sld::read_stl_file(std::string &name) {
                 iss >> tmp_pnt[1]; // v3y
                 iss >> tmp_pnt[2]; // v3z
                 if (nod_map.find(std::make_tuple(tmp_pnt[0], tmp_pnt[1], tmp_pnt[2])) ==
-                        nod_map.end()) {
+                    nod_map.end()) {
                     nod_map[std::make_tuple(tmp_pnt[0], tmp_pnt[1], tmp_pnt[2])] =
                         nod_cnt++;
                 }
@@ -126,8 +126,8 @@ bool mdl_sld::read_stl_file(std::string &name) {
             std::cout << "Faces = " << fac_cnt << "\n";
             nodes.resize(nod_cnt);
             for (std::map<std::tuple<double, double, double>, size_t>::iterator it =
-                        nod_map.begin();
-                    it != nod_map.end(); it++) {
+                     nod_map.begin();
+                 it != nod_map.end(); it++) {
                 std::vector<double> node(3);
                 node[0] = std::get<0>(it->first);
                 node[1] = std::get<1>(it->first);
@@ -202,7 +202,7 @@ bool mdl_sld::read_poly_file(std::string &name) {
                 iss >> bmark;
                 max_faces_marker = std::max(max_faces_marker, bmark);
                 if (std::find(bc_markers.begin(), bc_markers.end(), bmark) ==
-                        bc_markers.end())
+                    bc_markers.end())
                     bc_markers.push_back(bmark);
                 faces_marker[i].push_back(bmark);
                 faces[i].polygons.resize(polygons);
@@ -272,7 +272,7 @@ bool mdl_sld::read_poly_file(std::string &name) {
                     max_edges_marker = std::max(max_edges_marker, bmark);
                     edges_marker[i].push_back(bmark);
                     if (std::find(bc_markers.begin(), bc_markers.end(), bmark) ==
-                            bc_markers.end())
+                        bc_markers.end())
                         bc_markers.push_back(bmark);
                 }
             }
@@ -531,7 +531,7 @@ void mdl_sld::read_prj_file(std::string &name) {
                     faces_marker[i].push_back(bmark);
                     max_faces_marker = std::max(max_faces_marker, bmark);
                     if (std::find(bc_markers.begin(), bc_markers.end(), bmark) ==
-                            bc_markers.end())
+                        bc_markers.end())
                         bc_markers.push_back(bmark);
                     for (unsigned int j = 0; j < faces[i].polygons.size(); j++) {
                         getline(sld_in_file, line);
@@ -1313,7 +1313,7 @@ void mdl_msh::refine_homogeneous() {
                 edg_tmp[1] = nod_glob[fac_edg_nodes_loc_map_id[2 * i + 1]];
                 std::sort(edg_tmp.begin(), edg_tmp.end());
                 if (edgesMap.find(std::make_pair(edg_tmp[0], edg_tmp[1])) ==
-                        edgesMap.end()) {
+                    edgesMap.end()) {
                     edgesMap[std::make_pair(edg_tmp[0], edg_tmp[1])] = edg_lvl;
                     new_edg_nodes[edg_lvl][0] = edg_tmp[0];
                     new_edg_nodes[edg_lvl][1] = edg_tmp[1];
@@ -1361,7 +1361,7 @@ void mdl_msh::refine_homogeneous() {
                 edg_tmp[1] = nod_glob[tet_edg_nodes_loc_map_id[2 * i + 1]];
                 std::sort(edg_tmp.begin(), edg_tmp.end());
                 if (edgesMap.find(std::make_pair(edg_tmp[0], edg_tmp[1])) ==
-                        edgesMap.end()) {
+                    edgesMap.end()) {
                     edgesMap[std::make_pair(edg_tmp[0], edg_tmp[1])] = edg_lvl;
                     new_edg_nodes[edg_lvl][0] = edg_tmp[0];
                     new_edg_nodes[edg_lvl][1] = edg_tmp[1];
@@ -2354,7 +2354,7 @@ void mdl_core::wrap_hfss(std::string &name, std::string &aux_path) {
         size_t idx = 0, nidx = 0, /* eidx = 0,*/ fidx = 0, tidx = 0;
         std::map<std::string, std::vector<size_t>> gSolidTets;
         for (std::vector<hfss_part>::iterator it = parts.begin(); it != parts.end();
-                it++) {
+             it++) {
             if (it->solve_inside) {
                 mdl_mtrl mtr;
                 mtr.name = it->name;
@@ -2377,8 +2377,8 @@ void mdl_core::wrap_hfss(std::string &name, std::string &aux_path) {
                     mtr.tetras.resize(gSolidTets[it->name].size());
                     size_t idx = 0;
                     for (std::vector<size_t>::iterator iter =
-                                gSolidTets[it->name].begin();
-                            iter != gSolidTets[it->name].end(); iter++) {
+                             gSolidTets[it->name].begin();
+                         iter != gSolidTets[it->name].end(); iter++) {
                         mtr.tetras[idx++] = *iter;
                         msh.tet_lab[*iter] = mtr.label;
                     }
@@ -2388,7 +2388,7 @@ void mdl_core::wrap_hfss(std::string &name, std::string &aux_path) {
             }
         }
         for (std::vector<hfss_bnd>::iterator it = bnds.begin(); it != bnds.end();
-                it++) {
+             it++) {
             mdl_bc bc;
             bc.type = it->type;
             bc.name = it->name;
@@ -2528,14 +2528,14 @@ void mdl_core::wrap_hfss(std::string &name, std::string &aux_path) {
         msh.fac_lab.assign(msh.n_faces, 0); // non boundary flag
         for (size_t fid = 0; fid < fac_hfss_tag.size(); fid++) {
             for (std::vector<hfss_bnd>::iterator it = bnds.begin(); it != bnds.end();
-                    it++) {
+                 it++) {
                 if (it->faces.size()) {
                     for (std::vector<size_t>::iterator itids = it->faces.begin();
-                            itids != it->faces.end(); itids++) {
+                         itids != it->faces.end(); itids++) {
                         if (std::find(fac_hfss_tag[fid].begin(), fac_hfss_tag[fid].end(),
                                       *itids) != fac_hfss_tag[fid].end()) {
                             for (std::vector<mdl_bc>::iterator bndit = frm.bcs.begin();
-                                    bndit != frm.bcs.end(); bndit++) {
+                                 bndit != frm.bcs.end(); bndit++) {
                                 if (bndit->name == it->name) {
                                     if (debug) {
                                         std::cout << " " << it->name << " " << facMap[fid] << " ";
@@ -2555,13 +2555,13 @@ void mdl_core::wrap_hfss(std::string &name, std::string &aux_path) {
                 // solid based boundaries
                 if (it->solids.size()) {
                     for (std::vector<size_t>::iterator itids = it->solids.begin();
-                            itids != it->solids.end(); itids++) {
+                         itids != it->solids.end(); itids++) {
                         std::vector<size_t> cid = bnd_map[*itids];
                         for (size_t idd = 0; idd < cid.size(); idd++) {
                             if (std::find(fac_hfss_tag[fid].begin(), fac_hfss_tag[fid].end(),
                                           cid[idd]) != fac_hfss_tag[fid].end()) {
                                 for (std::vector<mdl_bc>::iterator bndit = frm.bcs.begin();
-                                        bndit != frm.bcs.end(); bndit++) {
+                                     bndit != frm.bcs.end(); bndit++) {
                                     if (bndit->name == it->name) {
                                         if (debug) {
                                             std::cout << " " << it->name << " " << facMap[fid] << " ";
@@ -2596,8 +2596,8 @@ void mdl_core::wrap_hfss(std::string &name, std::string &aux_path) {
             for (size_t ii = 0; ii < 4; ii++) {
                 size_t fid = faces[ii];
                 if ((nodes[1] == msh.fac_nodes[fid][0]) &
-                        (nodes[2] == msh.fac_nodes[fid][1]) &
-                        (nodes[3] == msh.fac_nodes[fid][2])) {
+                    (nodes[2] == msh.fac_nodes[fid][1]) &
+                    (nodes[3] == msh.fac_nodes[fid][2])) {
                     msh.tet_faces[tit][0] = fid;
                 } else if ((nodes[0] == msh.fac_nodes[fid][0]) &
                            (nodes[2] == msh.fac_nodes[fid][1]) &
@@ -3081,10 +3081,10 @@ void mdl_core::wrap_aedt(std::string &name, std::string &aux_path) {
                     iss >> tmp_int;
                     map_facet_id_face_id[facet_id] = tmp_int;
                     for (std::map<int, std::vector<int>>::iterator it =
-                                map_body_id_face_ids.begin();
-                            it != map_body_id_face_ids.end(); it++)
+                             map_body_id_face_ids.begin();
+                         it != map_body_id_face_ids.end(); it++)
                         if (std::find(it->second.begin(), it->second.end(), tmp_int) !=
-                                it->second.end()) {
+                            it->second.end()) {
                             map_facet_id_body_id[facet_id] = it->first;
                         }
                 }
@@ -3160,7 +3160,7 @@ void mdl_core::wrap_aedt(std::string &name, std::string &aux_path) {
         std::cout << "\n";
         tet_flag.assign(msh.n_tetras, false);
         for (std::vector<aedt_part>::iterator it = parts.begin(); it != parts.end();
-                it++) {
+             it++) {
             if (it->solve_inside) {
                 mdl_mtrl mtr;
                 mtr.name = it->name;
@@ -3177,7 +3177,7 @@ void mdl_core::wrap_aedt(std::string &name, std::string &aux_path) {
                     }
                 }
                 if (std::find(mtrl_ids.begin(), mtrl_ids.end(), it->id) !=
-                        mtrl_ids.end()) {
+                    mtrl_ids.end()) {
                     std::cout << mtr.name << " " << mtr.type << " " << mtr.label << "\n";
                     frm.mtrls.push_back(mtr);
                 }
@@ -3207,7 +3207,7 @@ void mdl_core::wrap_aedt(std::string &name, std::string &aux_path) {
         }
         fac_flag.assign(msh.n_faces, true);
         for (std::vector<aedt_bnd>::iterator it = bnds.begin(); it != bnds.end();
-                it++) {
+             it++) {
             mdl_bc bc;
             bc.type = it->type;
             bc.name = it->name;
@@ -3259,10 +3259,10 @@ void mdl_core::wrap_aedt(std::string &name, std::string &aux_path) {
             }
         for (int n : face_ids) {
             for (std::map<int, std::vector<int>>::iterator it =
-                        map_body_id_face_ids.begin();
-                    it != map_body_id_face_ids.end(); it++)
+                     map_body_id_face_ids.begin();
+                 it != map_body_id_face_ids.end(); it++)
                 if (std::find(it->second.begin(), it->second.end(), n) !=
-                        it->second.end())
+                    it->second.end())
                     map_body_bc[it->first] = id++;
         }
         std::vector<int> new_bcs;
@@ -3490,8 +3490,8 @@ void mdl_core::create_tri_mesh() {
     msh.n_edges = edg_cnt;
     msh.edg_nodes.resize(edg_cnt);
     for (std::map<std::pair<size_t, size_t>, size_t>::iterator it =
-                edg_map.begin();
-            it != edg_map.end(); it++) {
+             edg_map.begin();
+         it != edg_map.end(); it++) {
         std::vector<size_t> edge(2);
         edge[0] = std::get<0>(it->first);
         edge[1] = std::get<1>(it->first);

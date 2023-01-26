@@ -201,9 +201,9 @@ void solver::solve_dmumps(sp_mat<double> &matrix, sp_mat<double> &rhs) {
     idz->a = new DMUMPS_REAL[idz->nz];
     size_t idx = 0;
     for (typename sp_mat<double>::iterator itr = matrix.begin();
-            itr != matrix.end(); itr++) {
+         itr != matrix.end(); itr++) {
         for (typename sp_vec<double>::iterator itc = itr->begin();
-                itc != itr->end(); itc++) {
+             itc != itr->end(); itc++) {
             idz->a[idx] = (DMUMPS_REAL)itc->val;
             idz->irn[idx] = (MUMPS_INT)(itr - matrix.begin()) + 1;
             idz->jcn[idx++] = (MUMPS_INT)itc->idx + 1;
@@ -225,10 +225,10 @@ void solver::solve_dmumps(sp_mat<double> &matrix, sp_mat<double> &rhs) {
     idx = 0;
     size_t i = 0;
     for (typename sp_mat<double>::iterator itr = rhs.begin(); itr != rhs.end();
-            itr++) {
+         itr++) {
         idz->irhs_ptr[i++] = (MUMPS_INT)idx + 1;
         for (typename sp_vec<double>::iterator itc = itr->begin();
-                itc != itr->end(); itc++) {
+             itc != itr->end(); itc++) {
             if (itc->idx < nrows) {
                 idz->irhs_sparse[idx] = (MUMPS_INT)itc->idx + 1;
                 idz->rhs_sparse[idx++] = (DMUMPS_REAL)itc->val;
@@ -280,9 +280,9 @@ void solver::solve_zmumps(sp_mat<std::complex<double>> &matrix,
     idz->a = new ZMUMPS_COMPLEX[idz->nz];
     size_t idx = 0;
     for (typename sp_mat<std::complex<double>>::iterator itr = matrix.begin();
-            itr != matrix.end(); itr++) {
+         itr != matrix.end(); itr++) {
         for (typename sp_vec<std::complex<double>>::iterator itc = itr->begin();
-                itc != itr->end(); itc++) {
+             itc != itr->end(); itc++) {
             idz->a[idx].r = (ZMUMPS_REAL)itc->val.real();
             idz->a[idx].i = (ZMUMPS_REAL)itc->val.imag();
             idz->irn[idx] = (MUMPS_INT)(itr - matrix.begin()) + 1;
@@ -305,10 +305,10 @@ void solver::solve_zmumps(sp_mat<std::complex<double>> &matrix,
     idx = 0;
     size_t i = 0;
     for (typename sp_mat<std::complex<double>>::iterator itr = rhs.begin();
-            itr != rhs.end(); itr++) {
+         itr != rhs.end(); itr++) {
         idz->irhs_ptr[i++] = (MUMPS_INT)idx + 1;
         for (typename sp_vec<std::complex<double>>::iterator itc = itr->begin();
-                itc != itr->end(); itc++) {
+             itc != itr->end(); itc++) {
             if (itc->idx < nrows) {
                 idz->irhs_sparse[idx] = (MUMPS_INT)itc->idx + 1;
                 idz->rhs_sparse[idx].r = (ZMUMPS_REAL)itc->val.real();
@@ -584,8 +584,8 @@ std::vector<double> pos) {
                     {4 * pos[1] * (1 - pos[0] - pos[1])},
                     {4 * pos[0] * (1 - pos[0] - pos[1])}});
                 if (mdl.frm.p > 2)
-                    shp.push_back(
-                {   {pos[0] * pos[1] * (pos[0] - pos[1])},
+                    shp.push_back( {
+                    {pos[0] * pos[1] * (pos[0] - pos[1])},
                     {(1 - pos[0] - pos[1]) * pos[1] * (1 - pos[0] - 2 * pos[1])},
                     {(1 - pos[0] - pos[1]) * pos[0] * (1 - 2 * pos[0] - pos[1])},
                     {(1 - pos[0] - pos[1]) * pos[0] * pos[1]}});
@@ -942,10 +942,10 @@ void solver::analyze_e_v_stat() {
         if (dir[i])
             matrix[i].clear();
     for (typename sp_mat<double>::iterator itr = matrix.begin();
-            itr != matrix.end(); itr++)
+         itr != matrix.end(); itr++)
         if (itr->size() > 0) {
             for (typename sp_vec<double>::iterator itc = itr->begin();
-                    itc != itr->end(); itc++)
+                 itc != itr->end(); itc++)
                 if (dir[itc->idx])
                     itc->val = 0.0;
         }
@@ -953,7 +953,7 @@ void solver::analyze_e_v_stat() {
         if (dir[i])
             matrix(i, i) = 1.0;
     for (typename sp_vec<double>::iterator itc = sp_non_dir_val.begin();
-            itc != sp_non_dir_val.end(); itc++)
+         itc != sp_non_dir_val.end(); itc++)
         if (!dir[itc->idx])
             rhs(0, itc->idx) -= itc->val;
     std::cout << "Direct solver solution\n";
@@ -1018,10 +1018,10 @@ void solver::analyze_h_a_stat() {
         if (dir[i])
             matrix[i].clear();
     for (typename sp_mat<double>::iterator itr = matrix.begin();
-            itr != matrix.end(); itr++)
+         itr != matrix.end(); itr++)
         if (itr->size() > 0) {
             for (typename sp_vec<double>::iterator itc = itr->begin();
-                    itc != itr->end(); itc++)
+                 itc != itr->end(); itc++)
                 if (dir[itc->idx])
                     itc->val = 0.0;
         }
@@ -1029,7 +1029,7 @@ void solver::analyze_h_a_stat() {
         if (dir[i])
             matrix(i, i) = 1.0;
     for (typename sp_vec<double>::iterator itc = sp_non_dir_val.begin();
-            itc != sp_non_dir_val.end(); itc++)
+         itc != sp_non_dir_val.end(); itc++)
         if (!dir[itc->idx])
             rhs(0, itc->idx) -= itc->val;
     std::cout << "Direct solver solution\n";

@@ -23,8 +23,7 @@
 #include "project.h"
 #include "solver.h"
 
-project::project(int argc, char **argv) // parse and execute
-{
+project::project(int argc, char **argv) { // parse and execute
     if (argc > 1) {
         full_path_name = argv[1];
         name = full_path_name;
