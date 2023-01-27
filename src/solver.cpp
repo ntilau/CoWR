@@ -170,6 +170,8 @@ solver::solver(mdl_core &_mdl) : mdl(_mdl) {
     compute_label_map();
     if (strcmp(mdl.frm.type.data(), "EM_E_FD") == 0)
         analyze_em_e_fd();
+    else if (strcmp(mdl.frm.type.data(), "EM_E_EIG") == 0)
+        analyze_em_e_eig();
     else if (strcmp(mdl.frm.type.data(), "E_V_STAT") == 0)
         analyze_e_v_stat();
     else if (strcmp(mdl.frm.type.data(), "H_A_STAT") == 0)
@@ -882,6 +884,10 @@ void solver::analyze_em_e_fd() {
     std::cout << "Direct solver solution\n";
     solve_zmumps(matrix, rhs);
     */
+}
+
+void solver::analyze_em_e_eig()
+{
 }
 
 void solver::analyze_e_v_stat() {

@@ -24,28 +24,23 @@
 #include "solver.h"
 
 project::project(int argc, char **argv) { // parse and execute
-    if (argc > 1) {
-        full_path_name = argv[1];
-        name = full_path_name;
-        task = LOAD_CDNS;
-        execute_task();
+    if(argc < 2)
+    {
+        print_usage(std::cout);
+        exit(0);
     }
-
-    // task = LOAD_POLY;
-    // execute_task();
-    // int ret = system(std::string("tetgen -pqA " + full_path_name +
-    // ".poly").data()); task = RUN_TETGEN; execute_task();
-    // task = SAVE_FES;
-    // execute_task();
-
-    // model.msh.save_vtk_mesh(name);
-    model.msh.get_mesh_statistics();
-
-    // std::cout << get_info() << std::endl;
-    // std::cout << get_proc_mem() << std::endl;
+    else{
+        this->full_path_name= std::string(argv[1]);
+    }
 }
 
 project::~project() {}
+
+void project::print_usage(std::ostream& ostr)
+{
+    ostr << "Usage: fes path/to/project\n";
+    ostr << "Example: fes ./example/MagicTee.aedt\n";
+}
 
 void project::execute_task() {
     try {

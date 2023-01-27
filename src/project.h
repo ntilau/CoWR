@@ -49,6 +49,7 @@ public:
     } task;
     project(int, char **);
     ~project();
+    void print_usage(std::ostream& ostr);
     mdl_core model; // all the model information is stored here
     std::string name = "";
     std::string data_path = "./";

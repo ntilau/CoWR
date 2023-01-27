@@ -10,7 +10,7 @@ BINDIR = ./bin
 SRCDIR = ./src
 OBJDIR = ./obj
 
-ARGS = #$(BINDIR)/RectangularWG +freq 1e10
+ARGS = $(BINDIR)/RectangularWG.poly
 
 CFLAGS = $(INCDIR) -std=gnu++11 -m64 -O2 -fopenmp -static
 LFLAGS = $(LIBDIR) -m64 -fopenmp -static -s \

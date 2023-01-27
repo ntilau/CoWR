@@ -182,11 +182,14 @@ public:
             "None", "PerfectE", "PerfectH", "Radiation", "WavePort", "Impedance",
             "LumpedPort", "LumpedRLC"
         },
+        {
+            "None", "PerfectE", "PerfectH", "Radiation"
+        },
         {"None", "Voltage"},
         {"None", "Current", "Voltage", "Insulation", "Skin"}
     };
     std::vector<std::list<std::string>> frm_type = {
-        {"EM_E_FD"}, {"E_V_STAT"}, {"H_A_STAT"}, {"EM_PO"}
+        {"EM_E_FD"}, {"EM_E_EIG"}, {"E_V_STAT"}, {"H_A_STAT"}, {"EM_PO"}
     };
     std::string type = "EM_E_FD";
     mdl_frm();
@@ -199,7 +202,8 @@ public:
     void write_prj_file(std::string &name);
     void read_prj_file(std::string &name);
     struct freq_type {
-        std::vector<double> range = {1e9, 1e9};
+        double nominal = 1e10;
+        std::vector<double> range = {1e9, 1e10};
         unsigned int nbr = 1;
     } freq;
     unsigned int niter = 100; // max number of iterations of iterative solver
