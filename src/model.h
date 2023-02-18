@@ -124,7 +124,6 @@ public:
     void get_bounding_info();
     void write_prj_file(std::string &name);
     void read_prj_file(std::string &name);
-    void read_cdns_files(std::string &name);
     void read_tetgen_files(std::string &name);
     void read_triangle_files(std::string &name);
     void save_vtk_mesh(std::string);
@@ -221,9 +220,6 @@ public:
     mdl_frm frm;
     mdl_sld sld;
     mdl_msh msh;
-    void wrap_hfss(std::string &data_path, std::string &name);
-    void wrap_aedt(std::string &data_path, std::string &name);
-    void wrap_cdns(std::string &data_path, std::string &name);
     void create_tri_mesh();
     void clear() {
         sld.clear();
