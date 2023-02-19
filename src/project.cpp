@@ -44,7 +44,7 @@ std::string project::get_info()
     char hostname[HOST_NAME_MAX];
     char username[LOGIN_NAME_MAX];
     gethostname(hostname, HOST_NAME_MAX);
-    getlogin_r(username, LOGIN_NAME_MAX);
+    getlogin(username, LOGIN_NAME_MAX);
     long pages = sysconf(_SC_PHYS_PAGES);
     long page_size = sysconf(_SC_PAGE_SIZE);
     host = std::string(hostname);
