@@ -1,25 +1,33 @@
 #ifndef PROJECT_H
 #define PROJECT_H
 
+#define FES_VERSION 0.0.0.1
+
 #include <string>
 #include <time.h>
+#include <filesystem>
 
 #include "model.h"
 
-class timer {
+class timer
+{
 public:
-    timer() {
+    timer()
+    {
         tic();
     }
     ~timer() {}
-    void tic() {
+    void tic()
+    {
         lc = clock();
     }
-    double toc() {
+    double toc()
+    {
         clock_t cc = clock();
         return (cc - lc) / 1000.0;
     }
-    std::string strtoc() {
+    std::string strtoc()
+    {
         clock_t cc = clock();
         std::stringstream timing;
         timing << (cc - lc) / 1000.0 << " s";
@@ -30,48 +38,37 @@ private:
     clock_t lc;
 };
 
-class project {
+class logger : public std::ostringstream
+{
 public:
-    enum task_to_perform {
-        NONE = 0,
-        LOAD_FES,
-        SAVE_FES,
-        LOAD_HFSS,
-        LOAD_AEDT,
-        LOAD_CDNS,
-        LOAD_POLY,
-        SAVE_POLY,
-        LOAD_STL,
-        RUN_TETGEN,
-        RUN_TRIANGLE,
-        REFINE_HOMOGENEOUSLY,
-        ANALYZE
-    } task;
-    project(int, char **);
+    template <typename T>
+    logger &operator<<(T a)
+    {
+        oss << a;
+        return *this;
+    }
+private:
+    std::ostringstream oss;
+};
+
+class project : private std::filesystem::path,
+                private timer
+{
+public:
+    project(std::string name);
     ~project();
-    void print_usage(std::ostream& ostr);
-    mdl_core model; // all the model information is stored here
-    std::string name = "";
-    std::string data_path = "./";
-    std::string aux_path = "./";
-    std::string full_path_name = "./";
+    logger log;
+    // all the model information is stored here
+    mdl_core model;
+
     std::string get_stats(timer &); // Statistics
-    void execute_task();
-    std::string get_info(); // Computer name, CPU cores and OMP threads number
-    int get_num_proc();     // Number of processors
-    std::vector<std::string> get_mac();
-    bool check_mac();
-    std::string set_priority(unsigned int);
-    std::string get_priority();
+    std::string get_info();         // User and computer names, Max RAM, CPU cores and threads number
     std::string get_proc_mem();
-    std::string get_sys_mem();
     std::string get_loc_time();
-    std::string get_gmt();
 
 private:
     std::string get_var(const std::string name);
     int get_int(const std::string name);
-    void parser(int, char **);
 };
 
 #endif // PROJECT_H

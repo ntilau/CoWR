@@ -12,11 +12,14 @@ OBJDIR = ./obj
 
 ARGS = $(BINDIR)/RectangularWG.poly
 
-CFLAGS = $(INCDIR) -std=gnu++11 -m64 -O2 -fopenmp -static
+CFLAGS = $(INCDIR) -std=gnu++17 -m64 -O3 -fopenmp -static
 LFLAGS = $(LIBDIR) -m64 -fopenmp -static -s \
 	-lsmumps -ldmumps -lcmumps -lzmumps -lmumps_common -lmpiseq_seq -lpord \
 	-lopenblas -larpack -lgfortran -lquadmath
-OBJS = $(addprefix $(OBJDIR)/, main.o model.o project.o solver.o)
+SRCS=$(wildcard  $(SRCDIR)/*.cpp)
+OBJS=$(patsubst $(SRCDIR)/%.cpp, $(OBJDIR)/%.o, $(SRCS))
+#OBJS = $(addprefix $(OBJDIR)/, $(shell "find $(SRCDIR) -name '*.cpp' -exec sh -c 'echo $\{0%.cpp\}.o' {} \;"))
+#OBJS = $(addprefix $(OBJDIR)/, main.o model.o project.o solver.o)
 
 all: $(OBJDIR) $(BIN)
 
@@ -32,6 +35,6 @@ $(OBJDIR)/%.o : $(SRCDIR)/%.cpp
 
 .PHONY: clean
 clean:
-	rm -f $(OBJDIR)/*.o $(BINDIR)/$(BIN)
+	rm -f $(OBJDIR)/*.o $(BINDIR)/$(BIN) $(BINDIR)/*log $(BINDIR)/*.1.*
 
 
