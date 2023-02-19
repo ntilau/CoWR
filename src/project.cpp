@@ -42,9 +42,8 @@ std::string project::get_info()
     std::string host, user, memory, cores, threads;
 #ifdef __linux__
     char hostname[HOST_NAME_MAX];
-    char username[LOGIN_NAME_MAX];
     gethostname(hostname, HOST_NAME_MAX);
-    getlogin(username, LOGIN_NAME_MAX);
+    const char* username = getlogin();
     long pages = sysconf(_SC_PHYS_PAGES);
     long page_size = sysconf(_SC_PAGE_SIZE);
     host = std::string(hostname);
