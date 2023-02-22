@@ -2,9 +2,9 @@
 
 ARCH = $(shell uname -m)
 PLAT = $(shell uname -s | tr '[:upper:]' '[:lower:]')-gnu
-# PLAT = w64-mingw32
+PLAT = w64-mingw32
 EXTRA = 
-# EXTRA = -lpsapi -liphlpapi
+EXTRA = -lpsapi -liphlpapi
 
 BIN = fes
 
@@ -16,14 +16,14 @@ BINDIR  = ./bin/$(ARCH)-$(PLAT)
 OBJDIR  = ./obj/$(ARCH)-$(PLAT)
 SRCDIR  = ./src
 
-
-
 ARGS = $(BIN)/RectangularWG.poly
 
 CFLAGS = $(INCDIR) -std=gnu++17 -O3 -fopenmp -static
 LFLAGS = $(LIBDIR) -fopenmp -static -s \
 	-lsmumps -ldmumps -lcmumps -lzmumps -lmumps_common -lmpiseq -lpord \
-	-larpack -llapack -lopenblas -lgfortran -lquadmath $(EXTRA)
+	-ltet -ltriangle \
+	-larpack -llapack -lblas -lgfortran -lquadmath \
+	$(EXTRA)
 SRCS=$(wildcard  $(SRCDIR)/*.cpp)
 OBJS=$(patsubst $(SRCDIR)/%.cpp, $(OBJDIR)/%.o, $(SRCS))
 #OBJS = $(addprefix $(OBJDIR)/, main.o model.o project.o solver.o)
