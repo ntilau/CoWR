@@ -2,15 +2,15 @@
 
 ARCH = $(shell uname -m)
 PLAT = $(shell uname -s | tr '[:upper:]' '[:lower:]')-gnu
-PLAT = w64-mingw32
+# PLAT = w64-mingw32
 EXTRA = 
-EXTRA = -lpsapi -liphlpapi
+# EXTRA = -lpsapi -liphlpapi
 
 BIN = fes
 
 CC = -$(ARCH)-$(PLAT)-g++
-INCDIR = -I./dep/include
-LIBDIR = -L./dep/lib/$(ARCH)-$(PLAT)/
+INCDIR = -I./ext/include
+LIBDIR = -L./ext/lib/$(ARCH)-$(PLAT)/
 
 BINDIR  = ./bin/$(ARCH)-$(PLAT)
 OBJDIR  = ./obj/$(ARCH)-$(PLAT)
