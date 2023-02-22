@@ -52,7 +52,8 @@ std::string project::get_info()
     cores = std::to_string(std::thread::hardware_concurrency());
     threads = std::to_string(std::thread::hardware_concurrency());
 #elif _WIN32
-    name = get_var("USER") + "@" + get_var("COMPUTERNAME");
+    host = get_var("COMPUTERNAME");
+    user = get_var("USER");
     cores = get_var("NUMBER_OF_PROCESSORS");
     threads = get_var("OMP_NUM_THREADS");
     MEMORYSTATUSEX statex;

@@ -1,40 +1,54 @@
 .SUFFIXES: .cpp .o
 
+ARCH = $(shell uname -m)
+PLAT = $(shell uname -s | tr '[:upper:]' '[:lower:]')-gnu
+# PLAT = w64-mingw32
+EXTRA = 
+# EXTRA = -lpsapi -liphlpapi
+
 BIN = fes
 
-CC = g++
-INCDIR = 
-LIBDIR = 
+CC = -$(ARCH)-$(PLAT)-g++
+INCDIR = -I./dep/include
+LIBDIR = -L./dep/lib/$(ARCH)-$(PLAT)/
 
-BINDIR = ./bin
-SRCDIR = ./src
-OBJDIR = ./obj
+BINDIR  = ./bin/$(ARCH)-$(PLAT)
+OBJDIR  = ./obj/$(ARCH)-$(PLAT)
+SRCDIR  = ./src
 
-ARGS = $(BINDIR)/RectangularWG.poly
 
-CFLAGS = $(INCDIR) -std=gnu++17 -m64 -O3 -fopenmp -static
-LFLAGS = $(LIBDIR) -m64 -fopenmp -static -s \
-	-lsmumps -ldmumps -lcmumps -lzmumps -lmumps_common -lmpiseq_seq -lpord \
-	-lopenblas -larpack -lgfortran -lquadmath
+
+ARGS = $(BIN)/RectangularWG.poly
+
+CFLAGS = $(INCDIR) -std=gnu++17 -O3 -fopenmp -static
+LFLAGS = $(LIBDIR) -fopenmp -static -s \
+	-lsmumps -ldmumps -lcmumps -lzmumps -lmumps_common -lmpiseq -lpord \
+	-larpack -llapack -lopenblas -lgfortran -lquadmath $(EXTRA)
 SRCS=$(wildcard  $(SRCDIR)/*.cpp)
 OBJS=$(patsubst $(SRCDIR)/%.cpp, $(OBJDIR)/%.o, $(SRCS))
-#OBJS = $(addprefix $(OBJDIR)/, $(shell "find $(SRCDIR) -name '*.cpp' -exec sh -c 'echo $\{0%.cpp\}.o' {} \;"))
 #OBJS = $(addprefix $(OBJDIR)/, main.o model.o project.o solver.o)
 
-all: $(OBJDIR) $(BIN)
+all: $(BINDIR) $(OBJDIR) $(BIN)
 
 $(BIN): $(OBJS)
 	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS)
-	$(BINDIR)/$(BIN) $(ARGS)
+
+$(BINDIR):
+	if [ ! -d "$(BINDIR)" ]; then mkdir $(BINDIR); fi
 
 $(OBJDIR):
+	if [ ! -d "./obj" ]; then mkdir ./obj; fi
 	if [ ! -d "$(OBJDIR)" ]; then mkdir $(OBJDIR); fi
 
 $(OBJDIR)/%.o : $(SRCDIR)/%.cpp
 	$(CC) $(CFLAGS) -c  $< -o $@
 
+.PHONY: test
+test:
+	$(BINDIR)/$(BIN) $(ARGS)
+
 .PHONY: clean
 clean:
-	rm -f $(OBJDIR)/*.o $(BINDIR)/$(BIN) $(BINDIR)/*log $(BINDIR)/*.1.*
+	rm -f $(OBJDIR)/*.o $(BINDIR)/$(BIN)
 
 
