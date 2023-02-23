@@ -1,7 +1,7 @@
 .SUFFIXES: .cpp .o
 
 ARCH = $(shell uname -m)
-ARCH = aarch64
+#ARCH = aarch64
 PLAT = $(shell uname -s | tr '[:upper:]' '[:lower:]')-gnu
 # PLAT = w64-mingw32
 EXTRA = 
