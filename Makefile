@@ -9,7 +9,7 @@ EXTRA =
 
 BIN = fes
 
-CC = -$(ARCH)-$(PLAT)-g++
+CC = $(ARCH)-$(PLAT)-g++
 INCDIR = -I./ext/include
 LIBDIR = -L./ext/lib/$(ARCH)-$(PLAT)/
 
