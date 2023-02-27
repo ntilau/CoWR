@@ -11,8 +11,8 @@ BIN = fes
 
 CC = $(ARCH)-$(PLAT)-g++
 CC = g++
-INCDIR = -I./ext/include
-LIBDIR = -L./ext/lib/$(ARCH)-$(PLAT)/
+INCDIR = -I./dep/include
+LIBDIR = -L./dep/lib/$(ARCH)-$(PLAT)/
 
 BINDIR  = ./bin/$(ARCH)-$(PLAT)
 OBJDIR  = ./obj/$(ARCH)-$(PLAT)
