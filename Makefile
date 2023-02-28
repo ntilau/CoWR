@@ -9,7 +9,7 @@ EXTRA =
 
 BIN = fes
 
-CC = $(ARCH)-$(PLAT)-g++
+CC = $(ARCH)-$(PLAT)-g++ -D__linux__
 CC = g++
 INCDIR = -I./dep/include
 LIBDIR = -L./dep/lib/$(ARCH)-$(PLAT)/
@@ -17,11 +17,12 @@ LIBDIR = -L./dep/lib/$(ARCH)-$(PLAT)/
 BINDIR  = ./bin/$(ARCH)-$(PLAT)
 OBJDIR  = ./obj/$(ARCH)-$(PLAT)
 SRCDIR  = ./src
+TEST    = ./test
 
-ARGS = $(BIN)/RectangularWG.poly
+ARGS = $(TEST)/RectangularWG.poly
 
-CFLAGS = $(INCDIR) -std=gnu++17 -O3 -fopenmp -static
-LFLAGS = $(LIBDIR) -fopenmp -static -s \
+CFLAGS = $(INCDIR) -std=c++17 -O3 -fopenmp -static
+LFLAGS = $(LIBDIR) -std=c++17 -fopenmp -static -s \
 	-lsmumps -ldmumps -lcmumps -lzmumps -lmumps_common -lmpiseq -lpord \
 	-ltet -ltriangle \
 	-larpack -llapack -lblas -lgfortran -lquadmath \

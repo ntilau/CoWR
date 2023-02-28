@@ -55,7 +55,7 @@ class project : private std::filesystem::path,
                 private timer
 {
 public:
-    project(std::string name);
+    project(const std::string& name);
     ~project();
     logger log;
     // all the model information is stored here

@@ -3,7 +3,6 @@
 #include "model.h"
 #include "project.h"
 #include <iostream>
-#include <filesystem>
 
 int main(int argc, char *argv[])
 {
@@ -15,8 +14,7 @@ int main(int argc, char *argv[])
         }
         else
         {
-            const std::string name(argv[1]);
-            project p (name);
+            project p(argv[1]);
         }
     }
     catch (std::string error)

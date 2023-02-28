@@ -21,7 +21,7 @@
 #include "project.h"
 #include "solver.h"
 
-project::project(const std::string name) : std::filesystem::path(name)
+project::project(const std::string& name) : std::filesystem::path(name)
 {
     std::cout << "--- Finite Elements Software ---" << std::endl;
     std::cout << get_loc_time() << std::endl;
@@ -42,12 +42,18 @@ std::string project::get_info()
     std::string host, user, memory, cores, threads;
 #ifdef __linux__
     char hostname[HOST_NAME_MAX];
+	char login_r[LOGIN_NAME_MAX];
     gethostname(hostname, HOST_NAME_MAX);
+	getlogin_r(login_r, LOGIN_NAME_MAX);
     const char* username = getlogin();
     long pages = sysconf(_SC_PHYS_PAGES);
     long page_size = sysconf(_SC_PAGE_SIZE);
-    host = std::string(hostname);
-    user = std::string(username);
+	if (hostname != NULL)
+		host = std::string(hostname);
+	if (username != NULL)
+		user = std::string(username);
+	else if (login_r != NULL)
+		user = std::string(login_r);
     memory = std::to_string(pages * page_size / 1048576);
     cores = std::to_string(std::thread::hardware_concurrency());
     threads = std::to_string(std::thread::hardware_concurrency());
