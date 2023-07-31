@@ -13,7 +13,7 @@ BIN = fes$(LEGACY)
 
 CC = $(ARCH)-$(PLAT)-g++ -w
 
-INCDIR = -I./dep/include -I./dep/include/arma/include -DTETLIBRARY
+INCDIR = -I./dep/include
 LIBDIR = -L./dep/lib/$(ARCH)-$(PLAT)/
 
 BINDIR  = ./bin/$(ARCH)-$(PLAT)
@@ -23,7 +23,7 @@ TEST    = ./test
 
 ARGS = $(TEST)/RectangularWG.poly
 
-CFLAGS = $(INCDIR) -std=c++17 -O3 -fopenmp -static
+CFLAGS = $(INCDIR) -std=c++17 -O3 -fopenmp -static -DTETLIBRARY -DTRIANGLE
 LFLAGS = $(LIBDIR) -std=c++17 -fopenmp -s \
 	-lsmumps -ldmumps -lcmumps -lzmumps -lmumps_common -lmpiseq_seq -lpord \
 	-ltet -ltriangle \
