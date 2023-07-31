@@ -21,11 +21,11 @@ TEST    = ./test
 
 ARGS = $(TEST)/RectangularWG.poly
 
-CFLAGS = $(INCDIR) -std=c++17 -O3 -fopenmp -static -DTETLIBRARY -DTRIANGLE
-LFLAGS = $(LIBDIR) -std=c++17 -fopenmp -s \
+CFLAGS = $(INCDIR) -O2 -fPIC -fopenmp -static -DTETLIBRARY -DTRIANGLE
+LFLAGS = $(LIBDIR) -print-file-name=libc.a -fPIC -fopenmp -static -static-libgcc -static-libstdc++ -s \
 	-lsmumps -ldmumps -lcmumps -lzmumps -lmumps_common -lmpiseq_seq -lpord \
 	-ltet -ltriangle \
-	-larpack -llapack -lblas -lgfortran -lquadmath \
+	-larpack -llapack -lblas -lgfortran -lquadmath -lc\
 	$(EXTRA)
 SRCS=$(wildcard  $(SRCDIR)/*.cpp)
 OBJS=$(patsubst $(SRCDIR)/%.cpp, $(OBJDIR)/%.o, $(SRCS))
