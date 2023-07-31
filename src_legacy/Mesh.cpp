@@ -3,9 +3,9 @@
 //#include "Config.h"
 #include <iomanip>
 
-extern "C" {
+/*extern "C" {
 #include <metis.h>
-}
+}*/
 #include <stdlib.h>     /* malloc, free, rand */
 
 Mesh::Mesh()
@@ -72,9 +72,11 @@ void Mesh::SaveField(std::string FieldName)
     outField.close();
 }
 
+
 void Mesh::PartitionMesh(int nparts)
 {
     std::cout << "Mesh partitioning";
+    /*
     arma::wall_clock mt;
     mt.tic();
     nDomains = nparts;
@@ -201,11 +203,13 @@ void Mesh::PartitionMesh(int nparts)
         outField << (float) tetDom(i) << "\n";
     }
     outField.close();
+    */
 }
 
 void Mesh::Reorder()
 {
-    std::cout << "Metis reording\n";
+    std::cout << "Metis reordering\n";
+    /*
     int ne = (int) nTetras;
     int ns = (int) nEdges;
     int nn = (int) nNodes;
@@ -276,6 +280,7 @@ void Mesh::Reorder()
     edgNodes = newEdgNodes;
     delete perm;
     delete iperm;
+    */
 }
 
 

@@ -2,7 +2,7 @@
 #define MUMPS_H
 
 #include <armadillo>
-#include <gmm.h>
+#include <gmm/gmm.h>
 
 class MUMPS
 {

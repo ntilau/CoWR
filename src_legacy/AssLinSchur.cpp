@@ -2,7 +2,7 @@
 
 #include <armadillo>
 #include "Const.h"
-#include "Mem.h"
+#include "Config.h"
 #include "EqSys.h"
 #include "DoF.h"
 #include "EleMat.h"
@@ -164,10 +164,10 @@ AssLinSchur::AssLinSchur(std::ofstream& logFile, EqSys* sys): prj(sys->prj), msh
     {
         std::cout << lt.toc() << " s\n";
     }
-    MemStat::print(logFile);
+    logFile << Config::get_proc_mem();
     if(opt->verbose)
     {
-        MemStat::print(std::cout);
+        std::cout << Config::get_proc_mem();
     }
     logFile << "On boundaries:\n";
     for(size_t bcid = 0; bcid < msh->facBC.size(); bcid++)
@@ -436,7 +436,7 @@ AssLinSchur::AssLinSchur(std::ofstream& logFile, EqSys* sys): prj(sys->prj), msh
             logFile << lt.toc() << " s\n";
         }
     }
-    MemStat::print(logFile);
+    logFile << Config::get_proc_mem();
     logFile << "Finishing:\n";
     lt.tic();
     if(sys->WavePortsNum > 0)

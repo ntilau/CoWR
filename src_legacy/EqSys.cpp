@@ -1,7 +1,7 @@
 #include "EqSys.h"
 #include "Quad.h"
 #include "Const.h"
-#include "Mem.h"
+#include "Config.h"
 #include "Field.h"
 #include "Mesh.h"
 #include "Rad.h"
@@ -52,10 +52,10 @@ EqSys::EqSys(std::ofstream& logFile, Project* pPrj) : prj(pPrj), msh(pPrj->msh),
             {
             case Option::LIN:
                 AssLin(logFile, this);
-                MemStat::print(logFile);
+                logFile << Config::get_proc_mem();
                 if(opt->verbose)
                 {
-                    MemStat::print(std::cout);
+                    std::cout << Config::get_proc_mem();
                 }
                 break;
             default:
@@ -72,11 +72,11 @@ EqSys::EqSys(std::ofstream& logFile, Project* pPrj) : prj(pPrj), msh(pPrj->msh),
                 {
                     SolveSingleComplex(logFile);
                 }
-                MemStat::print(logFile);
-                if(opt->verbose)
-                {
-                    MemStat::print(std::cout);
-                }
+    logFile << Config::get_proc_mem();
+    if(opt->verbose)
+    {
+        std::cout << Config::get_proc_mem();
+    }
                 SaveData(logFile);
                 break;
             default:
@@ -89,11 +89,11 @@ EqSys::EqSys(std::ofstream& logFile, Project* pPrj) : prj(pPrj), msh(pPrj->msh),
             {
             case Option::LIN:
                 AssLin(logFile, this);
-                MemStat::print(logFile);
-                if(opt->verbose)
-                {
-                    MemStat::print(std::cout);
-                }
+    logFile << Config::get_proc_mem();
+    if(opt->verbose)
+    {
+        std::cout << Config::get_proc_mem();
+    }
                 break;
             case Option::NL:
                 if(opt->nl)
@@ -114,11 +114,11 @@ EqSys::EqSys(std::ofstream& logFile, Project* pPrj) : prj(pPrj), msh(pPrj->msh),
                         std::cout << "### Iter = " << iter << "\n";
                     }
                     AssNL(logFile, this);
-                    MemStat::print(logFile);
-                    if(opt->verbose)
-                    {
-                        MemStat::print(std::cout);
-                    }
+    logFile << Config::get_proc_mem();
+    if(opt->verbose)
+    {
+        std::cout << Config::get_proc_mem();
+    }
                     if(iter == 1)
                     {
                         Solprev.resize(DoFnum*opt->nHarm, 1);
@@ -141,7 +141,7 @@ EqSys::EqSys(std::ofstream& logFile, Project* pPrj) : prj(pPrj), msh(pPrj->msh),
                     Spprev = Sp;
                     Solprev *= 1.0-opt->relax;
                     Solprev += Sol*opt->relax;
-                    MemStat::print(logFile);
+                        logFile << Config::get_proc_mem();
                     SaveData(logFile);
                     logFile << "### Error = " << error << "\n";
                     if(opt->verbose)
@@ -161,11 +161,11 @@ EqSys::EqSys(std::ofstream& logFile, Project* pPrj) : prj(pPrj), msh(pPrj->msh),
                     std::cout << "Only Electrostatic at this stage\n";
                 }
                 AssElStat(logFile, this);
-                MemStat::print(logFile);
-                if(opt->verbose)
-                {
-                    MemStat::print(std::cout);
-                }
+    logFile << Config::get_proc_mem();
+    if(opt->verbose)
+    {
+        std::cout << Config::get_proc_mem();
+    }
                 break;
             case Option::DD:
                 if(opt->dds)
@@ -177,8 +177,11 @@ EqSys::EqSys(std::ofstream& logFile, Project* pPrj) : prj(pPrj), msh(pPrj->msh),
                     AssLinDD(logFile, this);
                     //gmm::scale(PR,Const::c0/2.0*Const::pi*freq);
                 }
-                MemStat::print(logFile);
-                MemStat::print(std::cout);
+    logFile << Config::get_proc_mem();
+    if(opt->verbose)
+    {
+        std::cout << Config::get_proc_mem();
+    }
                 break;
             default:
                 throw std::string("Formulation not available for this version");
@@ -215,11 +218,11 @@ EqSys::EqSys(std::ofstream& logFile, Project* pPrj) : prj(pPrj), msh(pPrj->msh),
                     {
                         SolveSingleComplex(logFile);
                     }
-                    MemStat::print(logFile);
-                    if(opt->verbose)
-                    {
-                        MemStat::print(std::cout);
-                    }
+    logFile << Config::get_proc_mem();
+    if(opt->verbose)
+    {
+        std::cout << Config::get_proc_mem();
+    }
                     SaveData(logFile);
                     break;
                 case Option::MATLAB:
@@ -271,11 +274,11 @@ EqSys::EqSys(std::ofstream& logFile, Project* pPrj) : prj(pPrj), msh(pPrj->msh),
                         }
                     }
                     SolveGmRes(logFile);
-                    MemStat::print(logFile);
-                    if(opt->verbose)
-                    {
-                        MemStat::print(std::cout);
-                    }
+    logFile << Config::get_proc_mem();
+    if(opt->verbose)
+    {
+        std::cout << Config::get_proc_mem();
+    }
                     SaveData(logFile);
                     break;
                 default:
@@ -318,9 +321,10 @@ void EqSys::SolveSingleComplex(std::ofstream& logFile)
     idz->sym=(MUMPS_INT) SymmFlag;
     idz->comm_fortran=-987654; // use_comm_world
     cmumps_c(idz);
+    // logFile << Config::get_proc_mem();
     if(opt->verbose)
     {
-        MemStat::AvailableMemory(std::cout);
+        std::cout << Config::get_proc_mem();
     }
     idz->n = (MUMPS_INT) DoFreal;
     idz->nz = (MUMPS_INT) gmm::nnz(A);
@@ -380,9 +384,10 @@ void EqSys::SolveSingleComplex(std::ofstream& logFile)
         std::swap(A, Atmp);
         std::swap(B, Btmp);
     }
+    // logFile << Config::get_proc_mem();
     if(opt->verbose)
     {
-        MemStat::print(std::cout);
+        std::cout << Config::get_proc_mem();
     }
     idz->job=6; // factorization and solution
     if(opt->verbose)
@@ -564,9 +569,10 @@ void EqSys::SolveDoubleComplex(std::ofstream& logFile)
     idz->sym=(MUMPS_INT) SymmFlag;
     idz->comm_fortran=-987654; // use_comm_world
     zmumps_c(idz);
+    // logFile << Config::get_proc_mem();
     if(opt->verbose)
     {
-        MemStat::AvailableMemory(std::cout);
+        std::cout << Config::get_proc_mem();
     }
     idz->n = (MUMPS_INT) DoFreal;
     idz->nz = (MUMPS_INT) gmm::nnz(A);
@@ -626,9 +632,10 @@ void EqSys::SolveDoubleComplex(std::ofstream& logFile)
         std::swap(A, Atmp);
         std::swap(B, Btmp);
     }
+    // logFile << Config::get_proc_mem();
     if(opt->verbose)
     {
-        MemStat::print(std::cout);
+        std::cout << Config::get_proc_mem();
     }
     idz->job=6; // factorization and solution
     if(opt->verbose)
@@ -947,7 +954,11 @@ void EqSys::SolveGmRes(std::ofstream& logFile)
     }
     else     /// DD Preconditioned GMRES ///
     {
-        MemStat::print(std::cout);
+    //logFile << Config::get_proc_mem();
+    if(opt->verbose)
+    {
+        std::cout << Config::get_proc_mem();
+    }
         if(WavePortsNum > 0)
         {
             if(!opt->sparam)

@@ -6,7 +6,3 @@ Download [x86_64-linux-gnu](https://github.com/ntilau/fes/raw/master/bin/x86_64-
 ```shell
 wget https://github.com/ntilau/fes/raw/master/bin/x86_64-linux-gnu/fes
 ```
-Download [x86_64-w64-mingw32](https://github.com/ntilau/fes/raw/master/bin/x86_64-w64-mingw32/fes.exe) build or type in your terminal:
-```shell
-certutil -urlcache -split -f https://github.com/ntilau/fes/raw/master/bin/x86_64-w64-mingw32/fes.exe fes.exe
-```

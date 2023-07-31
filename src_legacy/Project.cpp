@@ -1,15 +1,11 @@
-#include <string>
-#include <iostream>
-#include <iomanip>
-#include <fstream>
 
-#include "Config.h"
-#include "Mem.h"
+//#include "Mem.h"
 #include "Project.h"
+#include "Config.h"
 #include "Option.h"
 #include "HFSS.h"
 #include "TetGen.h"
-#include "Mesh.h"
+//#include "Mesh.h"
 
 Project::Project(std::ofstream& logFile, Option& pOpt) : opt(&pOpt), msh(new Mesh())
 {
@@ -96,11 +92,11 @@ Project::Project(std::ofstream& logFile, Option& pOpt) : opt(&pOpt), msh(new Mes
             std::cout << "Domains = " << opt->nDD << "\n";
         }
     }
+    logFile << Config::get_proc_mem();
     if(opt->verbose)
     {
-        MemStat::print(std::cout);
+        std::cout << Config::get_proc_mem();
     }
-    MemStat::print(logFile);
 }
 
 Project::~Project()

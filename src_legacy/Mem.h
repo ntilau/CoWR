@@ -1,13 +1,34 @@
 #ifndef MEM_H
 #define MEM_H
 
+#include <fstream>
+#include <iomanip>
+#include <iostream>
+#include <sstream>
+#include <string>
+
+#ifdef __linux__
+#include <sys/resource.h>
+#include <sys/time.h>
+#include <thread>
+#include <unistd.h>
+#elif _WIN32
+#include <iphlpapi.h>
+#include <psapi.h>
+#include <windows.h>
 #include <winsock2.h>
+#else
+#error "OS not supported!"
+#endif
+
 #include <string>
 #include <stdlib.h>
-#include <windows.h>
-#include <psapi.h>
 #include <iomanip>
 #include <ostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <vector>
+#include <iostream>
 
 class MemStat {
 public:

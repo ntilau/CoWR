@@ -1,98 +1,75 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#ifdef _WIN32
-#include <winsock2.h>
-#include <windows.h>
-#include <psapi.h>
-#include <iphlpapi.h>
-#endif
-
-#include <string>
-#include <stdlib.h>
+#include <fstream>
 #include <iomanip>
-#include <ostream>
-#include <stdio.h>
-#include <stdlib.h>
-#include <vector>
 #include <iostream>
+#include <sstream>
+#include <string>
+
+#ifdef __linux__
+#include <sys/resource.h>
+#include <sys/time.h>
+#include <thread>
+#include <unistd.h>
+#elif _WIN32
+#include <iphlpapi.h>
+#include <psapi.h>
+#include <windows.h>
+#include <winsock2.h>
+#else
+#error "OS not supported!"
+#endif
 
 class Config
 {
 public:
-    /// PRIORITY
-    inline static void SetPriorityRealTime()
+    inline static std::string get_info()
     {
-        SetPriorityClass(GetCurrentProcess(), REALTIME_PRIORITY_CLASS);
-    }
-    inline static void SetPriorityHigh()
-    {
-        SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);
-    }
-    inline static std::ostream& GetPriority(std::ostream& out)
-    {
-        DWORD dwPriClass = GetPriorityClass(GetCurrentProcess());
-        if(dwPriClass == REALTIME_PRIORITY_CLASS)
-        {
-            return out << "Running with realtime priority...\n";
-        }
-        else if(dwPriClass == HIGH_PRIORITY_CLASS)
-        {
-            return out << "Running with high priority...\n";
-        }
-        else if(dwPriClass == NORMAL_PRIORITY_CLASS)
-        {
-            return out << "Running with normal priority...\n";
-        }
-        else
-        {
-            return out << "Priority = " <<  dwPriClass << "...\n";
-        }
-    }
-    /// ENV VARS
-    inline static const std::string& ComputerInfo()
-    {
-        static std::string tag;
-        static const std::string name = GetVar("COMPUTERNAME");
-        if(name.size() != 0)
-        {
-            tag = tag + "COMPUTERNAME         = " + std::string(name) + "\n";
-        }
-        else
-        {
-            tag = tag + "COMPUTERNAME         = ?\n";
-        }
-        static const std::string cores = GetVar("NUMBER_OF_PROCESSORS");
-        if(cores.size() != 0)
-        {
-            tag = tag + "NUMBER_OF_PROCESSORS = " + std::string(cores) + "\n";
-        }
-        else
-        {
-            tag = tag + "NUMBER_OF_PROCESSORS = ?\n";
-        }
-        static const std::string threads = GetVar("OMP_NUM_THREADS");
-        if(threads.size() != 0)
-        {
-            tag = tag + "OMP_NUM_THREADS      = " + std::string(threads) + "\n";
-        }
-        else
-        {
-            tag = tag + "OMP_NUM_THREADS      = ?\n";
-        }
-        return tag;
+        std::stringstream tag;
+        std::string host, user, memory, cores, threads;
+#ifdef __linux__
+        char hostname[HOST_NAME_MAX];
+        char login_r[LOGIN_NAME_MAX];
+        gethostname(hostname, HOST_NAME_MAX);
+        getlogin_r(login_r, LOGIN_NAME_MAX);
+        const char *username = getlogin();
+        long pages = sysconf(_SC_PHYS_PAGES);
+        long page_size = sysconf(_SC_PAGE_SIZE);
+        if (hostname != NULL)
+            host = std::string(hostname);
+        if (username != NULL)
+            user = std::string(username);
+        else if (login_r != NULL)
+            user = std::string(login_r);
+        memory = std::to_string(pages * page_size / 1048576);
+        cores = std::to_string(std::thread::hardware_concurrency());
+        threads = std::to_string(std::thread::hardware_concurrency());
+#elif _WIN32
+        host = get_var("COMPUTERNAME");
+        user = get_var("USER");
+        cores = get_var("NUMBER_OF_PROCESSORS");
+        threads = get_var("OMP_NUM_THREADS");
+        MEMORYSTATUSEX statex;
+        statex.dwLength = sizeof(statex);
+        if (GlobalMemoryStatusEx(&statex))
+            memory = statex.ullAvailPhys / 1048576;
+#else
+#error "OS not supported!"
+#endif
+        tag << "Machine = " << host << " (" << user << ")\n";
+        tag << "Memory  = " << memory << " MB\n";
+        tag << "Cores   = " << cores; // << "\n";
+        // tag << "Threads = " << threads;
+        return tag.str();
     }
 
-    inline static const int GetNumProc()
+#ifdef _WIN32
+    inline static std::string get_var(const std::string name)
     {
-        return atoi(GetVar("NUMBER_OF_PROCESSORS").data());
-    }
-
-    inline static const std::string GetVar(const std::string name)
-    {
-        char* ptr = getenv(name.c_str());
+        char *ptr = getenv(name.c_str());
         std::string ret;
-        if(ptr == NULL)
+        if (ptr == NULL)
         {
             ret = std::string("");
         }
@@ -102,102 +79,55 @@ public:
         }
         return ret;
     }
-    inline static const int GetInt(const std::string name)
+
+    inline static int get_int(const std::string name)
     {
-        const std::string data = GetVar(name);
+        const std::string data = get_var(name);
         int ret = -1;
-        if(data.size() != 0)
+        if (data.size() != 0)
         {
             ret = atoi(data.c_str());
         }
         return ret;
     }
-    /// COMPUTER IDS
-    inline static const int get_computer_name(BYTE* computer_name, DWORD* computer_name_lg)
+#endif
+
+    inline static std::string get_proc_mem()
     {
-        HKEY hKey;
-        if(RegOpenKeyEx(HKEY_LOCAL_MACHINE,
-                        "SYSTEM\\CurrentControlSet\\Control\\ComputerName\\ComputerName",
-                        0, KEY_QUERY_VALUE, &hKey) != ERROR_SUCCESS)
+        std::stringstream out;
+        double physiPeak, physiPres;
+#ifdef __linux__
+        long pages = sysconf(_SC_PHYS_PAGES);
+        long page_size = sysconf(_SC_PAGE_SIZE);
+        int who = RUSAGE_SELF;
+        struct rusage usage;
+        int ret = getrusage(who, &usage);
+        physiPeak = pages * page_size / 1048576;
+        physiPres = usage.ru_maxrss / 1024;
+#elif _WIN32
+        HANDLE hProcess = GetCurrentProcess();
+        if (NULL == hProcess)
         {
-            return FALSE;
+            out << "Memory stats: Failed to acquire process handle";
+            return out.str();
         }
-        if(RegQueryValueEx(hKey, "ComputerName", NULL, NULL,
-                           (LPBYTE) computer_name,
-                           (LPDWORD) computer_name_lg) != ERROR_SUCCESS)
+        PROCESS_MEMORY_COUNTERS pmc;
+        if (!GetProcessMemoryInfo(hProcess, &pmc, sizeof(pmc)))
         {
-            RegCloseKey(hKey);
-            return FALSE;
+            out << "Memory stats: Failed to acquire process memory information";
         }
-        RegCloseKey(hKey);
-        return TRUE;
+        else
+        {
+            physiPeak = (double)pmc.PeakWorkingSetSize / 1048576;
+            physiPres = (double)pmc.WorkingSetSize / 1048576;
+        }
+        CloseHandle(hProcess);
+#endif
+        out << "Used RAM: " << physiPres << " MB |" << physiPeak << "|";
+        return out.str();
     }
-    /// MAC
-    inline static const void getdMacAddresses(std::vector<std::string>& vMacAddresses)
-    {
-        vMacAddresses.clear();
-        IP_ADAPTER_INFO AdapterInfo[32];       // Allocate information for up to 32 NICs
-        DWORD dwBufLen = sizeof(AdapterInfo);  // Save memory size of buffer
-        DWORD dwStatus = GetAdaptersInfo(      // Call GetAdapterInfo
-                             AdapterInfo,                 // [out] buffer to receive data
-                             &dwBufLen);                  // [in] size of receive data buffer
-        //No network card? Other error?
-        if(dwStatus != ERROR_SUCCESS)
-        {
-            return;
-        }
-        PIP_ADAPTER_INFO pAdapterInfo = AdapterInfo;
-        char szBuffer[512];
-        while(pAdapterInfo)
-        {
-            if(pAdapterInfo->Type == MIB_IF_TYPE_ETHERNET)
-            {
-                snprintf(szBuffer, sizeof(szBuffer), "%.2x-%.2x-%.2x-%.2x-%.2x-%.2x"
-                         , pAdapterInfo->Address[0]
-                         , pAdapterInfo->Address[1]
-                         , pAdapterInfo->Address[2]
-                         , pAdapterInfo->Address[3]
-                         , pAdapterInfo->Address[4]
-                         , pAdapterInfo->Address[5]
-                        );
-                vMacAddresses.push_back(std::string(szBuffer));
-            }
-            pAdapterInfo = pAdapterInfo->Next;
-        }
-    }
+
 };
-
-
-//class MemStat {
-//public:
-//    static std::ostream& print(std::ostream& out) {
-//        HANDLE hProcess = GetCurrentProcess();
-//        if(NULL == hProcess) {
-//            return out << "Memory stats: Failed to acquire process handle\n";
-//        }
-//        PROCESS_MEMORY_COUNTERS pmc;
-//        if(!GetProcessMemoryInfo(hProcess, &pmc, sizeof(pmc))) {
-//            out << "Memory stats: Failed to acquire process memory information\n";
-//        } else {
-//            double physiPeak = (double) pmc.PeakWorkingSetSize;
-//            double physiPres = (double) pmc.WorkingSetSize;
-//            out << "+Memory: " << physiPres/1048576 << " MB |" << physiPeak/1048576 << "|\n";
-//        }
-//        CloseHandle(hProcess);
-//        return out;
-//    }
-//
-//    static std::ostream& AvailableMemory(std::ostream& out) {
-//        MEMORYSTATUSEX statex;
-//        statex.dwLength = sizeof(statex);
-//        if(GlobalMemoryStatusEx(&statex)) {
-//            out << "Available memory: " << statex.ullAvailPhys/1048576 << " MB\n";
-//        } else {
-//            out << "No memory information available\n";
-//        }
-//        return out;
-//    }
-//};
 
 #endif
 

@@ -1,7 +1,7 @@
 #ifndef EQSYS_H
 #define EQSYS_H
 
-#include <gmm.h>
+#include <gmm/gmm.h>
 #include <armadillo>
 
 class Mesh;

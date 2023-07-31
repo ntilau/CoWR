@@ -2,6 +2,7 @@
 #define DOF_H
 
 #include "Project.h"
+#include "Config.h"
 #include <armadillo>
 
 class DoF

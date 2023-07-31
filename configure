@@ -1,3 +1,4 @@
 #!/bin/bash
 # Ubuntu prerequisites installation
-sudo apt install -y gcc g++ gfortran
+sudo apt install -y gcc g++ gfortran libmumps-dev libmumps-seq-dev libopenblas-dev libarpack2-dev libtet1.5-dev libtriangle-dev 
+#libarmadillo-dev libgmm++-dev

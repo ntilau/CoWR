@@ -1,13 +1,14 @@
 #include <time.h>
-#include <string>
 #include <fstream>
-#include <iostream>
 #include <iomanip>
+#include <iostream>
+#include <sstream>
+#include <string>
 #include <armadillo>
 
 #include "Config.h"
-#include "Mem.h"
-#include "MAC.h"
+//#include "Mem.h"
+//#include "MAC.h"
 #include "Option.h"
 #include "Project.h"
 #include "EqSys.h"
@@ -25,7 +26,8 @@ int main(int argc, char* argv[])
         std::cout << "----------------------------------------\n";
         opt.LIMITED = false;//!MAC::CheckMAC();
         t = time(NULL);
-        logFile << "# START: " << asctime(localtime(&t)) << Config::ComputerInfo();
+        logFile << "# START: " << asctime(localtime(&t)) << Config::get_info();
+        /*
         if(opt.highp)
         {
             Config::SetPriorityRealTime();
@@ -40,13 +42,14 @@ int main(int argc, char* argv[])
         {
             MemStat::AvailableMemory(std::cout);
         }
+        */
         arma::wall_clock totTimer;
         totTimer.tic();
         Project prj(logFile, opt);
         EqSys cSys(logFile, &prj);
         if(opt.verbose)
         {
-            MemStat::print(std::cout);
+            std::cout << Config::get_proc_mem();
             std::cout << "++ " << totTimer.toc() << " s\n";
         }
         logFile << "++ " << totTimer.toc() << " s\n";

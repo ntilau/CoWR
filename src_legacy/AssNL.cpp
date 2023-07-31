@@ -2,7 +2,7 @@
 
 #include <armadillo>
 #include "Const.h"
-#include "Mem.h"
+#include "Config.h"
 #include "EqSys.h"
 #include "DoF.h"
 #include "EleMat.h"
@@ -80,8 +80,11 @@ AssNL::AssNL(std::ofstream& logFile, EqSys* sys): prj(sys->prj), msh(sys->msh), 
     {
         std::cout << lt.toc() << " s\n";
     }
-    MemStat::print(logFile);
-    MemStat::print(std::cout);
+    logFile << Config::get_proc_mem();
+    if(opt->verbose)
+    {
+        std::cout << Config::get_proc_mem();
+    }
     logFile << "On boundaries:\n";
     for(size_t bcid = 0; bcid < msh->facBC.size(); bcid++)
     {
@@ -346,7 +349,7 @@ AssNL::AssNL(std::ofstream& logFile, EqSys* sys): prj(sys->prj), msh(sys->msh), 
             logFile << lt.toc() << " s\n";
         }
     }
-    MemStat::print(logFile);
+    logFile << Config::get_proc_mem();
     logFile << "Finishing:\n";
     lt.tic();
     if(sys->WavePortsNum > 0)

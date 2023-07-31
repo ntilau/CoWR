@@ -1,7 +1,7 @@
 #ifndef GMRES_H
 #define GMRES_H
 
-#include <gmm.h>
+#include <gmm/gmm.h>
 #include <cmumps_c.h>
 #include <zmumps_c.h>
 #include "Option.h"

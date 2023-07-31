@@ -2,7 +2,6 @@
 
 #include <armadillo>
 #include "Config.h"
-#include "Mem.h"
 #include "EqSys.h"
 #include "DoF.h"
 #include "EleMat.h"
@@ -47,10 +46,10 @@ AssElStat::AssElStat(std::ofstream& logFile, EqSys* sys): prj(sys->prj), msh(sys
     {
         std::cout << lt.toc() << " s\n";
     }
-    MemStat::print(logFile);
+    logFile << Config::get_proc_mem();
     if(opt->verbose)
     {
-        MemStat::print(std::cout);
+        std::cout << Config::get_proc_mem();
     }
     logFile << "On boundaries:\n";
     for(size_t bcid = 0; bcid < msh->facBC.size(); bcid++)
