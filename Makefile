@@ -6,10 +6,8 @@ PLAT = $(shell uname -s | tr '[:upper:]' '[:lower:]')-gnu
 # PLAT = w64-mingw32
 EXTRA = 
 # EXTRA = -lpsapi -liphlpapi
-LEGACY = 
-# LEGACY = _legacy
 
-BIN = fes$(LEGACY)
+BIN = fes$(VER)
 
 CC = $(ARCH)-$(PLAT)-g++ -w
 
@@ -18,7 +16,7 @@ LIBDIR = -L./dep/lib/$(ARCH)-$(PLAT)/
 
 BINDIR  = ./bin/$(ARCH)-$(PLAT)
 OBJDIR  = ./obj/$(ARCH)-$(PLAT)
-SRCDIR  = ./src$(LEGACY)
+SRCDIR  = ./src$(VER)
 TEST    = ./test
 
 ARGS = $(TEST)/RectangularWG.poly
@@ -52,6 +50,6 @@ test:
 
 .PHONY: clean
 clean:
-	rm -f $(OBJDIR)/*.o $(BINDIR)/$(BIN)
+	rm -f $(OBJDIR)/*.o $(BINDIR)/$(BIN)*
 
 
