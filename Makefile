@@ -22,7 +22,7 @@ TEST    = ./test
 ARGS = $(TEST)/RectangularWG.poly
 
 CFLAGS = $(INCDIR) -std=c++17 -O2 -fPIC -fopenmp -static -DTETLIBRARY -DTRIANGLE
-LFLAGS = $(LIBDIR) -std=c++17 -fPIC -fopenmp -static-libgcc -static-libstdc++ -s \
+LFLAGS = $(LIBDIR) -std=c++17 -fPIC -fopenmp -static-libgcc -static-libstdc++ -static -s \
 	-lsmumps -ldmumps -lcmumps -lzmumps -lmumps_common -lmpiseq_seq -lpord \
 	-ltet -ltriangle \
 	-larpack -llapack -lblas -lgfortran -lquadmath -lc\
