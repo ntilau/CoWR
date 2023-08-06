@@ -3,7 +3,11 @@
 HFSS::HFSS(Project* prj): name(prj->opt->name), msh(prj->msh), prj(prj), debug(prj->opt->dbg)
 {
     std::cout << "HFSS project files:\n";
+    #ifdef __linux__
+    system(std::string("cp ./" + name + ".hfssresults/*.results/*.cmesh/current.* .").c_str());
+    #elif _WIN32
     system(std::string("cd .\\" + name + ".hfssresults\\*.results\\*.cmesh && copy /Y current.* ..\\..\\..\\*").c_str());
+    #endif
     ReadMainHFSS();
     std::cout << "Reading points";
     ReadPoints();
@@ -11,7 +15,11 @@ HFSS::HFSS(Project* prj): name(prj->opt->name), msh(prj->msh), prj(prj), debug(p
     ReadFaces();
     std::cout << ", hydras";
     ReadHydras();
+    #ifdef __linux__
+    system(std::string("rm current.*").c_str());
+    #elif _WIN32
     system(std::string("del /F /Q current.*").c_str());
+    #endif
     FinalizeMesh();
 }
 

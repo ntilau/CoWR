@@ -123,7 +123,7 @@ public:
         }
         CloseHandle(hProcess);
 #endif
-        out << "Used RAM: " << physiPres << " MB |" << physiPeak << "|";
+        out << "Used RAM: " << physiPres << " MB |" << physiPeak << "|\n";
         return out.str();
     }
 
