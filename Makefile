@@ -18,11 +18,12 @@ BINDIR  = ./bin/$(ARCH)-$(PLAT)
 OBJDIR  = ./obj/$(ARCH)-$(PLAT)
 SRCDIR  = ./src$(VER)
 
-CFLAGS = $(INCDIR) -std=c++17 -O2 -DTETLIBRARY -DTRILIBRARY
-LFLAGS = $(LIBDIR) -std=c++17 -static -s \
+CFLAGS = $(INCDIR) -std=c++17 -fopenmp -O2 -DTETLIBRARY -DTRILIBRARY
+LFLAGS = $(LIBDIR) -std=c++17 -fopenmp -static -s \
 	-lsmumps -ldmumps -lcmumps -lzmumps -lmumps_common -lmpiseq -lpord \
 	-ltet -ltriangle \
-	-larpack -lopenblas -lgfortran -lquadmath
+	-larpack -lopenblas -lgfortran -lquadmath \
+	-Wl,--whole-archive -lpthread -Wl,--no-whole-archive
 SRCS=$(wildcard  $(SRCDIR)/*.cpp)
 OBJS=$(patsubst $(SRCDIR)/%.cpp, $(OBJDIR)/%.o, $(SRCS))
 
