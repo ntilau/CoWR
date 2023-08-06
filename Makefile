@@ -17,9 +17,6 @@ LIBDIR = -L./dep/lib/$(ARCH)-$(PLAT)/
 BINDIR  = ./bin/$(ARCH)-$(PLAT)
 OBJDIR  = ./obj/$(ARCH)-$(PLAT)
 SRCDIR  = ./src$(VER)
-TEST    = ./test
-
-ARGS = $(TEST)/RectangularWG.poly
 
 CFLAGS = $(INCDIR) -std=c++17 -O2 -fPIC -fopenmp -static -DTETLIBRARY -DTRIANGLE
 LFLAGS = $(LIBDIR) -std=c++17 -fPIC -fopenmp -static-libgcc -static-libstdc++ -static -s \
@@ -43,10 +40,6 @@ $(OBJDIR):
 
 $(OBJDIR)/%.o : $(SRCDIR)/%.cpp
 	$(CC) $(CFLAGS) -c  $< -o $@
-
-.PHONY: test
-test:
-	$(BINDIR)/$(BIN) $(ARGS)
 
 .PHONY: clean
 clean:

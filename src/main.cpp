@@ -1,8 +1,9 @@
 #define __cpp_lib_filesystem 201703
 
-#include "model.h"
-#include "project.h"
+#include "prj_core.h"
 #include <iostream>
+
+using namespace std;
 
 int main(int argc, char *argv[])
 {
@@ -10,16 +11,16 @@ int main(int argc, char *argv[])
     {
         if (argc < 2)
         {
-            std::cout << "Usage: fes /path/to/project_name.ext" << std::endl;
+            cout << "Usage: fes /path/to/project_name.ext" << endl;
         }
         else
         {
-            project p(argv[1]);
+            prj_core p(argv[1]);
         }
     }
-    catch (std::string error)
+    catch (string error)
     {
-        std::cout << error << std::endl;
+        cout << error << endl;
         return EXIT_FAILURE;
     }
     return EXIT_SUCCESS;
