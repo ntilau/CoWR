@@ -46,7 +46,7 @@ std::string prj_core::get_info()
     char hostname[HOST_NAME_MAX];
 	char login_r[LOGIN_NAME_MAX];
     gethostname(hostname, HOST_NAME_MAX);
-	getlogin_r(login_r, LOGIN_NAME_MAX);
+	//getlogin_r(login_r, LOGIN_NAME_MAX);
     const char* username = getlogin();
     const char* userenv = getenv("USER");
     long pages = sysconf(_SC_PHYS_PAGES);

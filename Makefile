@@ -9,7 +9,7 @@ EXTRA =
 
 BIN = fes$(VER)
 
-CC = $(ARCH)-$(PLAT)-g++ -w
+CC = g++ -w
 
 INCDIR = -I./dep/include
 LIBDIR = -L./dep/lib/$(ARCH)-$(PLAT)/

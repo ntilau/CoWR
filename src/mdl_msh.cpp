@@ -9,7 +9,7 @@
 #include <map>
 #include <algorithm>
 #include <math.h>
-
+#include <sstream>
 
 mdl_msh::mdl_msh()
 {
