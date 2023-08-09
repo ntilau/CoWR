@@ -19,7 +19,7 @@ OBJDIR  = ./obj/$(ARCH)-$(PLAT)
 SRCDIR  = ./src$(VER)
 
 CFLAGS = $(INCDIR) -std=c++17 -fopenmp -O2 -DTETLIBRARY -DTRILIBRARY
-LFLAGS = $(LIBDIR) -std=c++17 -fopenmp -static -s \
+LFLAGS = $(LIBDIR) -std=c++17 -fopenmp -static \
 	-lsmumps -ldmumps -lcmumps -lzmumps -lmumps_common -lmpiseq -lpord \
 	-ltet -ltriangle \
 	-larpack -lopenblas -lgfortran -lquadmath \
@@ -45,4 +45,6 @@ $(OBJDIR)/%.o : $(SRCDIR)/%.cpp
 clean:
 	rm -f $(OBJDIR)/*.o $(BINDIR)/$(BIN)
 
-
+.PHONY: test
+test:
+	$(BINDIR)/$(BIN) ../models/WR10.hfss

@@ -36,13 +36,13 @@ public:
     vector<double> int_node(size_t);
     vector<double> int_node(size_t, size_t &);
     // members
-    vector<vector<size_t>> tet_nodes;
-    vector<vector<size_t>> tet_edges;
-    vector<vector<size_t>> tet_faces;
-    vector<vector<size_t>> fac_nodes;
-    vector<vector<size_t>> fac_edges;
-    vector<vector<size_t>> edg_nodes;
-    vector<vector<double>> nod_pos;
+    vector<vector<size_t> > tet_nodes;
+    vector<vector<size_t> > tet_edges;
+    vector<vector<size_t> > tet_faces;
+    vector<vector<size_t> > fac_nodes;
+    vector<vector<size_t> > fac_edges;
+    vector<vector<size_t> > edg_nodes;
+    vector<vector<double> > nod_pos;
     vector<int> edg_lab;
     vector<int> fac_lab;
     vector<int> tet_lab;

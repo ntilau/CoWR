@@ -12,20 +12,47 @@
 #include <iostream>
 #include <map>
 
-
 #include "mdl_frm.h"
 #include "mdl_sld.h"
 #include "mdl_msh.h"
- 
+
 using namespace std;
 
 class mdl_core
 {
 public:
+    struct HFSSPart
+    {
+        std::string name = "";
+        std::string material = "";
+        bool solveInside = false;
+        int id = 0;
+    };
+
+    struct HFSSBnd
+    {
+        std::string name = "";
+        std::string type = "";
+        std::vector<size_t> faces;
+        std::vector<size_t> solids;
+        std::vector<size_t> faceIds;
+        int numModes = 1;
+    };
+
+    struct HFSSMtrl
+    {
+        double permittivity = 1;
+        double permeability = 1;
+        double conductivity = 0;
+        double dielectric_loss_tangent = 0;
+        std::string name = "";
+    };
     mdl_frm frm;
     mdl_sld sld;
     mdl_msh msh;
     void create_tri_mesh();
+    void import(string path, string name, string ext);
+    void import_hfss(string path, string name_ext);
     void clear()
     {
         sld.clear();
@@ -34,6 +61,7 @@ public:
     }
 
 protected:
+    std::map<std::string, std::string> extractContent(const std::string &fileName, const std::string &dataType);
     void removeCharsFromString(string &str, const char *charsToRemove)
     {
         for (unsigned int i = 0; i < strlen(charsToRemove); ++i)
@@ -65,6 +93,18 @@ protected:
             return 1;
     }
     const char *SI_chars = "munp";
+private:
+    std::map<string, HFSSMtrl > mtrls;
+    std::vector<HFSSBnd > bnds;
+    std::vector<HFSSPart > parts;
+    std::vector<size_t> mtrlTag;
+    std::vector<size_t> hfssid;
+    std::vector<bool> tetFlag;
+    std::vector<bool> facFlag;
+    std::vector<bool> nodFlag;
+    std::vector< std::vector<size_t> > facHFSStag;
+    std::map<size_t, std::vector<size_t> > bndMap;
+    std::vector<std::vector<size_t> > adjTetra;
 };
 
 #endif // MDL_CORE_H

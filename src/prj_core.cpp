@@ -24,12 +24,13 @@
 
 prj_core::prj_core(const std::string& name) : std::filesystem::path(name)
 {
+    tic();
     std::cout << "--- Finite Elements Software ---" << std::endl;
     std::cout << get_loc_time() << std::endl;
     std::cout << get_info() << std::endl;
     std::cout << "--------------------------------" << std::endl;
     std::cout << "Opening " << c_str() << std::endl;
-
+    model.import( parent_path(), stem(), extension());
     std::cout << get_stats(*this);
 }
 
@@ -47,6 +48,7 @@ std::string prj_core::get_info()
     gethostname(hostname, HOST_NAME_MAX);
 	getlogin_r(login_r, LOGIN_NAME_MAX);
     const char* username = getlogin();
+    const char* userenv = getenv("USER");
     long pages = sysconf(_SC_PHYS_PAGES);
     long page_size = sysconf(_SC_PAGE_SIZE);
 	if (hostname != NULL)
@@ -55,6 +57,8 @@ std::string prj_core::get_info()
 		user = std::string(username);
 	else if (login_r != NULL)
 		user = std::string(login_r);
+    else if (userenv != NULL)
+        user = std::string(userenv);
     memory = std::to_string(pages * page_size / 1048576);
     cores = std::to_string(std::thread::hardware_concurrency());
     threads = std::to_string(std::thread::hardware_concurrency());

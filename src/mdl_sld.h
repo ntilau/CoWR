@@ -36,7 +36,8 @@ public:
     vector<vector<double>> holes;
     vector<vector<double>> regions;
     vector<int> regions_marker;
-    int max_edges_marker = -SIZE_MAX, max_faces_marker = -SIZE_MAX,
+    int max_edges_marker = -SIZE_MAX, 
+        max_faces_marker = -SIZE_MAX,
         max_regions_marker = -SIZE_MAX;
     unsigned int dim = 0;
     string tetgen_command = "pqaAfee";
