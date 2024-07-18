@@ -49,4 +49,4 @@ clean:
 
 .PHONY: test
 test:
-	$(BINDIR)/$(BIN) ../models/WR10.hfss
+	$(BINDIR)/$(BIN) WR10 1e9

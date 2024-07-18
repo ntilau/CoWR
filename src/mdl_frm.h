@@ -1,6 +1,7 @@
 #ifndef MDL_FRM_H
 #define MDL_FRM_H
 
+#include <cstdint>
 #include <vector>
 #include <complex>
 #include <string>

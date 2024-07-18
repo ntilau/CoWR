@@ -1,6 +1,7 @@
 #ifndef MDL_CORE_H
 #define MDL_CORE_H
 
+#include <cstdint>
 #include <cstring>
 #include <string>
 #include <algorithm>
@@ -11,6 +12,7 @@
 #include <iomanip>
 #include <iostream>
 #include <map>
+
 
 #include "mdl_frm.h"
 #include "mdl_sld.h"

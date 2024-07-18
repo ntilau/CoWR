@@ -1,6 +1,7 @@
 #ifndef MDL_MSH_H
 #define MDL_MSH_H
 
+#include <cstdint>
 #include <string>
 #include <vector>
 
