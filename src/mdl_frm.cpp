@@ -62,7 +62,7 @@ void mdl_frm::update_msh_info(mdl_msh &msh)
 
 void mdl_frm::write_prj_file(string &name)
 {
-    ofstream prj_out_file(string(name + ".fes").c_str(),
+    ofstream prj_out_file(string(name + ".core").c_str(),
                                ios::out | ios::ate);
     prj_out_file << "#Formulation " << type << "\n";
     prj_out_file << "#Materials " << mtrls.size() << "\n";
@@ -111,7 +111,7 @@ void mdl_frm::write_prj_file(string &name)
 void mdl_frm::read_prj_file(string &name)
 {
     clear();
-    ifstream frm_in_file(string(name + ".fes").c_str(), ios::in);
+    ifstream frm_in_file(string(name + ".core").c_str(), ios::in);
     string line;
     istringstream iss;
     unsigned int tmp_uint;
