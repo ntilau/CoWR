@@ -467,7 +467,7 @@ unsigned int mdl_sld::check_dim()
 
 void mdl_sld::write_prj_file(string &name)
 {
-    ofstream sld_out_file(string(name + ".fes").c_str(),
+    ofstream sld_out_file(string(name + ".core").c_str(),
                                ios::out | ios::ate | ios::app);
     sld_out_file << "#Sld_Nodes " << nodes.size() << "\n";
     for (size_t i = 0; i < nodes.size(); i++)
@@ -535,7 +535,7 @@ void mdl_sld::write_prj_file(string &name)
 void mdl_sld::read_prj_file(string &name)
 {
     clear();
-    ifstream sld_in_file(string(name + ".fes").c_str(), ios::in);
+    ifstream sld_in_file(string(name + ".core").c_str(), ios::in);
     string line;
     istringstream iss;
     unsigned int tmp_uint;

@@ -110,7 +110,7 @@ $begin 'AnsoftProject'
 			WorkingCS=1
 			$begin 'GeometryCore'
 				BlockVersionID=3
-				DataVersion=4
+				DataVersion=6
 				NativeKernel='ACIS'
 				NativeKernelVersionID=5
 				Units='mm'
@@ -752,14 +752,14 @@ $begin 'AnsoftProject'
 					PortsOnly=false
 					MaxDeltaS=0.0001
 					UseMatrixConv=false
-					MaximumPasses=6
+					MaximumPasses=1
 					MinimumPasses=1
 					MinimumConvergedPasses=1
 					PercentRefinement=30
 					IsEnabled=true
 					BasisOrder=0
 					UseIterativeSolver=false
-					DoLambdaRefine=true
+					DoLambdaRefine=false
 					DoMaterialLambda=true
 					SetLambdaTarget=false
 					Target=0.1
@@ -827,10 +827,133 @@ $begin 'AnsoftProject'
 				Default_Freq='1GHz'
 			$end 'PlotDefaults'
 			$begin 'FieldsPlotManagerID'
-				NextUniqueID=1
+				NextUniqueID=7
 				MoveBackwards=false
-				NumQuantityType=0
-				NumPlots=0
+				NumQuantityType=1
+				$begin 'QuantityFolder_1'
+					PlotFolder='MeshPlots'
+					'Real time mode'=true
+					$begin 'ColorMapSettings'
+						ColorMapType='Spectrum'
+						SpectrumType='Rainbow'
+						UniformColor(127, 255, 255)
+						RampColor(255, 127, 127)
+					$end 'ColorMapSettings'
+					$begin 'Scale3DSettings'
+						unit=90
+						m_nLevels=15
+						minvalue=1
+						maxvalue=100
+						log=false
+						IntrinsicMin=1
+						IntrinsicMax=100
+						LimitFieldValuePrecision=false
+						FieldValuePrecisionDigits=4
+						ScaleType=0
+						UserSpecifyValues(0)
+					$end 'Scale3DSettings'
+					$begin 'Marker3DSettings'
+						MarkerType=9
+						MarkerMapSize=true
+						MarkerMapColor=false
+						MarkerSize=0.25
+					$end 'Marker3DSettings'
+					$begin 'Arrow3DSettings'
+						ArrowType=1
+						ArrowMapSize=true
+						ArrowMapColor=true
+						ShowArrowTail=true
+						ArrowSize=0.25
+					$end 'Arrow3DSettings'
+					$begin 'DeformScaleSettings'
+						ShowDeformation=true
+						MinScaleFactor=0
+						MaxScaleFactor=1
+						DeformationScale=0
+					$end 'DeformScaleSettings'
+				$end 'QuantityFolder_1'
+				NumPlots=3
+				$begin 'PlotDefinition_1'
+					PlotName='Mesh1'
+					PlotDefinitionId=4
+					VersionID=0
+					SolutionId=29
+					QuantityId=-1
+					PlotFolder='MeshPlots'
+					FieldType='Fields'
+					UserSpecifyName=0
+					UserSpecifyFolder=0
+					StreamlinePlot=false
+					IntrinsicVar='Freq=\'1GHz\' Phase=\'0deg\''
+					FieldPlotGeometry(1, 128, 2, 1, 8)
+					FilterIds(0)
+					'Real time mode'=true
+					$begin 'MeshSettings'
+						'Scale factor'=100
+						Transparency=0
+						'Mesh type'='Shaded'
+						'Surface only'=true
+						'Add grid'=true
+						Refinement=0
+						'Use geometry color'=true
+						'Mesh line color'(0, 0, 255)
+						'Filled color'(255, 255, 255)
+					$end 'MeshSettings'
+				$end 'PlotDefinition_1'
+				$begin 'PlotDefinition_2'
+					PlotName='Mesh2'
+					PlotDefinitionId=5
+					VersionID=0
+					SolutionId=29
+					QuantityId=-1
+					PlotFolder='MeshPlots'
+					FieldType='Fields'
+					UserSpecifyName=0
+					UserSpecifyFolder=0
+					StreamlinePlot=false
+					IntrinsicVar='Freq=\'1GHz\' Phase=\'0deg\''
+					FieldPlotGeometry(1, 128, 2, 1, 44)
+					FilterIds(0)
+					'Real time mode'=true
+					$begin 'MeshSettings'
+						'Scale factor'=100
+						Transparency=0
+						'Mesh type'='Shaded'
+						'Surface only'=true
+						'Add grid'=true
+						Refinement=0
+						'Use geometry color'=true
+						'Mesh line color'(0, 0, 255)
+						'Filled color'(255, 255, 255)
+					$end 'MeshSettings'
+				$end 'PlotDefinition_2'
+				$begin 'PlotDefinition_3'
+					PlotName='Mesh3'
+					PlotDefinitionId=6
+					VersionID=0
+					SolutionId=29
+					QuantityId=-1
+					PlotFolder='MeshPlots'
+					FieldType='Fields'
+					UserSpecifyName=0
+					UserSpecifyFolder=0
+					StreamlinePlot=false
+					IntrinsicVar='Freq=\'1GHz\' Phase=\'0deg\''
+					FieldPlotGeometry(1, 128, 2, 2, 56, 68)
+					FilterIds(0)
+					'Real time mode'=true
+					$begin 'MeshSettings'
+						'Scale factor'=100
+						Transparency=0
+						'Mesh type'='Shaded'
+						'Surface only'=true
+						'Add grid'=true
+						Refinement=0
+						'Use geometry color'=true
+						'Mesh line color'(0, 0, 255)
+						'Filled color'(255, 255, 255)
+					$end 'MeshSettings'
+				$end 'PlotDefinition_3'
 			$end 'FieldsPlotManagerID'
 			$begin 'Report3dInGeomWnd'
 				Report3dNum=0
@@ -940,6 +1063,7 @@ $begin 'AnsoftProject'
 					ID=29
 					Name='LastAdaptive'
 					$begin 'SimDataExtractor'
+						SimValue('Mag_E', 1, 154, false, SimValueID=438, 3, 0, 2, 0, false, false, 6, 1, 0, 1, 1, '', 0, 0)
 						$begin 'Sweeps'
 							$begin 'Sweep'
 								Variable='Freq'
@@ -990,8 +1114,8 @@ $begin 'AnsoftProject'
 					ID=68
 					Name='Sweep'
 					$begin 'SimDataExtractor'
-						SimValue('S(1,1)', 2, 90, false, SimValueID=275, 3, 0, 2, 0, false, false, -1, 1, 0, 1, 1, '', 0, 0)
-						SimValue('S(1,2)', 2, 90, false, SimValueID=276, 3, 0, 2, 0, false, false, -1, 1, 0, 1, 1, '', 0, 0)
+						SimValue('S(1,1)', 2, 90, false, SimValueID=404, 3, 0, 2, 0, false, false, -1, 1, 0, 1, 1, '', 0, 0)
+						SimValue('S(1,2)', 2, 90, false, SimValueID=405, 3, 0, 2, 0, false, false, -1, 1, 0, 1, 1, '', 0, 0)
 						$begin 'Sweeps'
 							$begin 'Sweep'
 								Variable='Freq'
@@ -1043,10 +1167,10 @@ $begin 'AnsoftProject'
 				V=22
 				$begin 'Setup'
 					N='Setup1'
-					V=130
-					Soln(N='AdaptivePass', V=277)
-					Soln(N='LastAdaptive', V=277)
-					Soln(N='Sweep', V=277)
+					V=342
+					Soln(N='AdaptivePass', V=343)
+					Soln(N='LastAdaptive', V=343)
+					Soln(N='Sweep', V=343)
 				$end 'Setup'
 			$end 'Version ID Map'
 			$begin 'ID Map'
@@ -1079,7 +1203,7 @@ $begin 'AnsoftProject'
 				DesignInstanceID=1
 				$begin 'WindowPosition'
 					$begin 'EditorWindow'
-						'3D Modeler'(Editor3d(View(WindowPos(5, -1, -1, -4, -30, 0, 308, 664, 616), OrientationMatrix(0.400230795145035, -0.0389022566378117, 0.0778005719184875, 0, 0.0866712480783463, 0.209419548511505, -0.341149568557739, 0, -0.00737699493765831, 0.349830269813538, 0.212874606251717, 0, -0.254231750965118, -0.486594468355179, -5.62910795211792, 1, 0, -2.0185182094574, 2.0185182094574, -1, 1, -0.727379322052002, 11.5598449707031), Drawings[4: 'Box1', 'Rectangle1', 'Rectangle2', 'Rectangle3'], 'View Data'('Render Mode'=1, 'Show Ruler'=1), ClipPlanes(ClipPlaneOptions(DisableWhenDrawingNewPlane=true, ForceOpqaueForUnclipped=false, ShowClipped=false, Transparency=0, HandleColor=16776960)))))
+						'3D Modeler'(Editor3d(View(WindowPos(3, -1, -1, -4, -30, 0, 308, 664, 616), OrientationMatrix(-0.125673890113831, -0.132970005273819, 0.27413421869278, 0, 0.290554136037827, -0.141553550958633, 0.0645397529006004, 0, 0.0917000994086266, 0.26628252863884, 0.171200379729271, 0, 0.0641909241676331, -0.0186162739992142, -5.71760416030884, 1, 0, -1.17970299720764, 1.04811453819275, -0.686417043209076, 0.647973299026489, 0.602666854858398, 10.490140914917), Drawings[7: 'Box1', 'Rectangle1', 'Rectangle2', 'Rectangle3', 'Mesh1', 'Mesh2', 'Mesh3'], 'View Data'('Render Mode'=1, 'Show Ruler'=1), ClipPlanes(ClipPlaneOptions(DisableWhenDrawingNewPlane=true, ForceOpqaueForUnclipped=false, ShowClipped=false, Transparency=0, HandleColor=16776960)))))
 					$end 'EditorWindow'
 				$end 'WindowPosition'
 				$begin 'ReportSetup'
@@ -1228,7 +1352,7 @@ $begin 'AnsoftProject'
 									$end 'Graph2D'
 								$end 'Graph2DsV2'
 								$begin 'PlotDisplayDataManager'
-									NextUniqueID=48
+									NextUniqueID=62
 									MoveBackwards=false
 									$begin 'PlotHeaderDataSource'
 										CompanyName=''
@@ -1712,17 +1836,17 @@ $begin 'AnsoftProject'
 									$end 'DocDefaultAttributes'
 									$begin 'PerViewPlotAttributeStoreMap'
 										$begin 'MapItem'
-											ItemID=47
+											ItemID=-1
 											$begin 'PlotAttributeStoreMap'
 												$begin 'MainMapItem'
 													$begin 'SubMapItem'
 														DataSourceID=4
 														$begin 'BasicLayoutAttribute'
 															$begin 'LayoutRect'
-																Top=671
-																Left=440
-																Bottom=9542
-																Right=9067
+																Top=664
+																Left=400
+																Bottom=9561
+																Right=9148
 															$end 'LayoutRect'
 														$end 'BasicLayoutAttribute'
 													$end 'SubMapItem'
@@ -1730,10 +1854,10 @@ $begin 'AnsoftProject'
 														DataSourceID=12
 														$begin 'BasicLayoutAttribute'
 															$begin 'LayoutRect'
-																Top=671
-																Left=440
-																Bottom=9542
-																Right=9067
+																Top=664
+																Left=400
+																Bottom=9561
+																Right=9148
 															$end 'LayoutRect'
 														$end 'BasicLayoutAttribute'
 													$end 'SubMapItem'
@@ -1744,7 +1868,7 @@ $begin 'AnsoftProject'
 																Top=75
 																Left=75
 																Bottom=9925
-																Right=334
+																Right=304
 															$end 'LayoutRect'
 														$end 'BasicLayoutAttribute'
 													$end 'SubMapItem'
@@ -1755,15 +1879,15 @@ $begin 'AnsoftProject'
 														$begin 'CartesianAxisLayoutAttribute'
 															$begin 'AxisRect'
 																Top=75
-																Left=9067
+																Left=9148
 																Bottom=9925
-																Right=9622
+																Right=9657
 															$end 'AxisRect'
 															$begin 'GridRect'
-																Top=671
-																Left=440
-																Bottom=9542
-																Right=9067
+																Top=664
+																Left=400
+																Bottom=9561
+																Right=9148
 															$end 'GridRect'
 														$end 'CartesianAxisLayoutAttribute'
 													$end 'SubMapItem'
@@ -1772,40 +1896,29 @@ $begin 'AnsoftProject'
 														$begin 'CartesianAxisLayoutAttribute'
 															$begin 'AxisRect'
 																Top=75
-																Left=359
-																Bottom=670
-																Right=9067
+																Left=329
+																Bottom=663
+																Right=9148
 															$end 'AxisRect'
 															$begin 'GridRect'
-																Top=671
-																Left=440
-																Bottom=9542
-																Right=9067
+																Top=664
+																Left=400
+																Bottom=9561
+																Right=9148
 															$end 'GridRect'
 														$end 'CartesianAxisLayoutAttribute'
 													$end 'SubMapItem'
 												$end 'MainMapItem'
 												$begin 'MainMapItem'
-													$begin 'SubMapItem'
-														DataSourceID=4
-														$begin 'CartesianCurveGroupLayoutAttribute'
-															X_spc=1000000000
-															X_fwd=4
-															X_fpr=2
-															Y1_spc=5
-															Y1_fwd=4
-															Y1_fpr=2
-														$end 'CartesianCurveGroupLayoutAttribute'
-													$end 'SubMapItem'
 												$end 'MainMapItem'
 												$begin 'MainMapItem'
 													$begin 'SubMapItem'
-														DataSourceID=46
+														DataSourceID=60
 														$begin 'CartesianXMarkerLayoutAttribute'
-															TextBoxMaxY=9682
-															TextBoxHeight=243
-															LineMaxYXInGrid=440
-															LineMaxYXOutOfGrid=9067
+															TextBoxMaxY=9710
+															TextBoxHeight=215
+															LineMaxYXInGrid=400
+															LineMaxYXOutOfGrid=9148
 														$end 'CartesianXMarkerLayoutAttribute'
 													$end 'SubMapItem'
 												$end 'MainMapItem'
@@ -1817,9 +1930,9 @@ $begin 'AnsoftProject'
 																$begin 'OverlayLayoutAttribute'
 																	$begin 'BoundingRect'
 																		Top=4850
-																		Left=434
+																		Left=404
 																		Bottom=9850
-																		Right=7934
+																		Right=7904
 																	$end 'BoundingRect'
 																	ModifySize=false
 																	ModifyPosition=false
@@ -1867,26 +1980,6 @@ $begin 'AnsoftProject'
 							ReportID=4
 							$begin 'WindowInfoList'
 								$begin 'Report2D'
-									$begin 'ViewInfo'
-										$begin 'WrapperView'
-											ID(47)
-										$end 'WrapperView'
-										$begin 'WrapperDoc'
-											HiddenDrawings()
-											$begin 'DispType'
-												PlotType=1
-												$begin 'CurveMed'
-													$begin 'MedCamera'
-														$begin 'svrc'
-															svid=4
-															view(47, cam(XYCam(false, true, true, true, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0)))
-														$end 'svrc'
-													$end 'MedCamera'
-												$end 'CurveMed'
-											$end 'DispType'
-										$end 'WrapperDoc'
-										WindowPos(WindowPos(3, -1, -1, -4, -30, 66, 87, 1244, 505))
-									$end 'ViewInfo'
 								$end 'Report2D'
 							$end 'WindowInfoList'
 						$end 'XY Plot 1'

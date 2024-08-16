@@ -1,9 +1,11 @@
 #ifndef MDL_SLD_H
 #define MDL_SLD_H
 
+#include <climits>
 #include <cstdint>
 #include <vector>
 #include <string>
+
 
 using namespace std;
 
@@ -37,9 +39,9 @@ public:
     vector<vector<double>> holes;
     vector<vector<double>> regions;
     vector<int> regions_marker;
-    int max_edges_marker = -SIZE_MAX, 
-        max_faces_marker = -SIZE_MAX,
-        max_regions_marker = -SIZE_MAX;
+    int max_edges_marker = INT_MIN, 
+        max_faces_marker = INT_MIN,
+        max_regions_marker = INT_MIN;
     unsigned int dim = 0;
     string tetgen_command = "pqaAfee";
     string triangle_command = "pqaAe";

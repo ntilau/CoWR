@@ -55,6 +55,7 @@ public:
     void create_tri_mesh();
     void import(string path, string name, string ext);
     void import_hfss(string path, string name_ext);
+    void read_prj_file(string path_name);
     void write_prj_file(string path_name);
     void clear()
     {
