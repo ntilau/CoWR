@@ -1,3 +1,13 @@
+## Computing Residuals a.k.a. CORE
+Generalized version of FES to extend to any Weighted Residuals Methods framework
+The goal is to have an as modular as possible implementation minimizing the need
+for external libraries.
+- Preprocessing and Postprocessing with VTK file formats
+  + Mesh manipulations with TRIANGLE & TETGEN
+- Wave Equation solvers in both FE or MOM formulations
+  + BLAS, ARPACK & MUMPS solvers to be standardized on
+- Low frequency stabilization to be addressed
+
 # Revision history
 To-do: 
 - Shared libraries conversion

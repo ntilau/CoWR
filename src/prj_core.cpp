@@ -25,7 +25,7 @@
 prj_core::prj_core(const std::string& name) : std::filesystem::path(name)
 {
     tic();
-    std::cout << "--- Finite Elements Software ---" << std::endl;
+    std::cout << "--- Computing Residuals ---" << std::endl;
     std::cout << get_loc_time() << std::endl;
     std::cout << get_info() << std::endl;
     std::cout << "--------------------------------" << std::endl;

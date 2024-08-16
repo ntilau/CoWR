@@ -7,18 +7,15 @@ PLAT = $(shell uname -s | tr '[:upper:]' '[:lower:]')-gnu
 EXTRA = 
 # EXTRA = -lpsapi -liphlpapi
 
-BIN = fes$(VER)
+BIN = core
 
-CC = $(ARCH)-$(PLAT)-g++
-ifeq ($(ARCH), aarch64)
-	CC = g++
-endif
+CC = g++
 INCDIR = -I./dep/include
 LIBDIR = -L./dep/lib/$(ARCH)-$(PLAT)/
 
 BINDIR  = ./bin/$(ARCH)-$(PLAT)
 OBJDIR  = ./obj/$(ARCH)-$(PLAT)
-SRCDIR  = ./src$(VER)
+SRCDIR  = ./src
 
 CFLAGS = $(INCDIR) -std=c++17 -fopenmp -O2 -DTETLIBRARY -DTRILIBRARY
 LFLAGS = $(LIBDIR) -std=c++17 -fopenmp -static \
@@ -49,4 +46,4 @@ clean:
 
 .PHONY: test
 test:
-	$(BINDIR)/$(BIN) $(BINDIR)/Strip.hfss
+	$(BINDIR)/$(BIN) $(BINDIR)/WG.hfss

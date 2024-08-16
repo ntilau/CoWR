@@ -22,7 +22,7 @@ mdl_msh::mdl_msh()
 
 void mdl_msh::write_prj_file(string &name)
 {
-    ofstream msh_out_file(string(name + ".fes").c_str(),
+    ofstream msh_out_file(string(name + ".core").c_str(),
                                ios::out | ios::ate | ios::app);
     msh_out_file << "#Mesh " << type << "\n";
     msh_out_file << "#Nodes " << n_nodes << "\n";
@@ -57,7 +57,7 @@ void mdl_msh::write_prj_file(string &name)
 void mdl_msh::read_prj_file(string &name)
 {
     clear();
-    ifstream msh_in_file(string(name + ".fes").c_str(), ios::in);
+    ifstream msh_in_file(string(name + ".core").c_str(), ios::in);
     string line;
     istringstream iss;
     unsigned int tmp_uint;
@@ -565,6 +565,7 @@ void mdl_msh::regularize_mesh()
         tet_edges.resize(n_tetras);
         tet_faces.resize(n_tetras);
         fac_adj_tet.resize(n_faces);
+        get_mesh_statistics();
         for (size_t i = 0; i < n_tetras; i++)
         {
             sort(tet_nodes[i].begin(), tet_nodes[i].end());
@@ -600,6 +601,7 @@ void mdl_msh::regularize_mesh()
         max_fac_marker = max(max_fac_marker, fac_lab[i]);
     for (size_t i = 0; i < tet_lab.size(); i++)
         max_tet_marker = max(max_tet_marker, tet_lab[i]);
+    get_mesh_statistics();
 }
 
 void mdl_msh::refine_homogeneous()

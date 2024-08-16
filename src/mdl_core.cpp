@@ -1,4 +1,6 @@
 #include "mdl_core.h"
+#include <climits>
+#include <algorithm>
 
 void mdl_core::create_tri_mesh()
 {
@@ -49,22 +51,24 @@ void mdl_core::create_tri_mesh()
 
 void mdl_core::import(string path, string name, string ext)
 {
+    int ret = 0;
     if (strcmp(ext.c_str(), ".hfss") == 0)
     {
         cout << "HFSS project files:" << endl;
 #ifdef __linux__
-        system(string("cp -f " + path + "/" + name + ".hfssresults/*.results/*.cmesh/current.* " + path).c_str());
+        ret = system(string("cp -f " + path + "/" + name + ".hfssresults/*.results/*.cmesh/current.* " + path).c_str());
 #elif _WIN32
         system(string("cd " + path + "\\" + name + ".hfssresults\\*.results\\*.cmesh && copy /Y current.* ..\\..\\..\\*").c_str());
 #endif
         import_hfss(path, string(path + "/" + name + ext));
         msh.get_mesh_statistics();
 #ifdef __linux__
-        system(string("rm -rf " + path + "/current.*").c_str());
+        ret = system(string("rm -rf " + path + "/current.*").c_str());
 #elif _WIN32
         system(string("del /F /Q current.*").c_str());
 #endif
-        FinalizeMesh();
+        msh.save_vtk_mesh(string(path + "/" + name ));
+        write_prj_file(string(path + "/" + name ));
     }
 }
 
@@ -590,16 +594,13 @@ void mdl_core::import_hfss(string path, string full_path_name)
                 }
             }
             fileName.close();
-            // msh->facNodes -= 1;
-            // msh->tetNodes -= 1;
-            // msh->tetFaces -= 1;
         }
         else
         {
             throw std::string(path + " project file \"current.hyd\" not available");
         }
     }
-
+    msh.get_mesh_statistics();
     cout << "Finalizing ..." << endl;
     {
         bool debug = true;
@@ -702,45 +703,44 @@ void mdl_core::import_hfss(string path, string full_path_name)
             std::cout << "tetMtrl newTetras\n";
         }
         
-        /*
-        for (size_t mtrid = 0; mtrid < msh->tetMtrl.size(); mtrid++)
-        {
-            std::vector<size_t> newTetras;
-            for (size_t tid = 0; tid < msh->tetMtrl[mtrid].Tetras.size(); tid++)
-            {
-                if (tetMap[msh->tetMtrl[mtrid].Tetras(tid)] < UINT_MAX)
-                {
-                    newTetras.push_back(tetMap[msh->tetMtrl[mtrid].Tetras(tid)]);
-                }
-            }
-            msh->tetMtrl[mtrid].Tetras.clear();
-            msh->tetMtrl[mtrid].Tetras.resize(newTetras.size());
-            for (size_t tid = 0; tid < newTetras.size(); tid++)
-            {
-                msh->tetMtrl[mtrid].Tetras(tid) = newTetras[tid];
-            }
-        }
+        // for (size_t mtrid = 0; mtrid < mtrls.size(); mtrid++)
+        // {
+        //     std::vector<size_t> newTetras;
+        //     for (size_t tid = 0; tid < msh->tetMtrl[mtrid].Tetras.size(); tid++)
+        //     {
+        //         if (tetMap[msh->tetMtrl[mtrid].Tetras(tid)] < UINT_MAX)
+        //         {
+        //             newTetras.push_back(tetMap[msh->tetMtrl[mtrid].Tetras(tid)]);
+        //         }
+        //     }
+        //     msh->tetMtrl[mtrid].Tetras.clear();
+        //     msh->tetMtrl[mtrid].Tetras.resize(newTetras.size());
+        //     for (size_t tid = 0; tid < newTetras.size(); tid++)
+        //     {
+        //         msh->tetMtrl[mtrid].Tetras(tid) = newTetras[tid];
+        //     }
+        // }
 
         // reorder nodes and faces
         if (debug)
         {
             std::cout << "nodMap " << msh.n_nodes << " facMap " << msh.n_faces << "\n";
         }
-        std::vector<size_t> nodMap(msh.n_nodes, UINT_MAX);
-        std::vector<size_t> facMap(msh.n_faces, UINT_MAX);
+        std::vector<size_t> nodMap(msh.n_nodes, -SIZE_MAX);
+        std::vector<size_t> facMap(msh.n_faces, -SIZE_MAX);
         for (size_t tid = 0; tid < msh.n_tetras; tid++)
         {
             for (size_t i = 0; i < 4; i++)
             {
-                if (nodFlag[msh->tetNodes(tid, i)] == false)
+                if (nodFlag[msh.tet_nodes[tid][i]] == false)
                 {
-                    nodFlag[msh->tetNodes(tid, i)] = true;
-                    nodMap[msh->tetNodes(tid, i)] = nidx++;
+                    nodFlag[msh.tet_nodes[tid][i]] = true;
+                    nodMap[msh.tet_nodes[tid][i]] = nidx++;
                 }
-                if (facFlag[msh->tetFaces(tid, i)] == false)
+                if (facFlag[msh.tet_faces[tid][i]] == false)
                 {
-                    facFlag[msh->tetFaces(tid, i)] = true;
-                    facMap[msh->tetFaces(tid, i)] = fidx++;
+                    facFlag[msh.tet_faces[tid][i]] = true;
+                    facMap[msh.tet_faces[tid][i]] = fidx++;
                 }
             }
         }
@@ -753,10 +753,10 @@ void mdl_core::import_hfss(string path, string full_path_name)
         {
             for (size_t i = 0; i < 4; i++)
             {
-                msh->tetNodes(tid, i) = nodMap[msh->tetNodes(tid, i)];
-                msh->tetFaces(tid, i) = facMap[msh->tetFaces(tid, i)];
+                msh.tet_nodes[tid][i] = nodMap[msh.tet_nodes[tid][i]];
+                msh.tet_faces[tid][i] = facMap[msh.tet_faces[tid][i]];
             }
-            msh->tetNodes.row(tid) = arma::sort(msh->tetNodes.row(tid));
+            std:sort(msh.tet_nodes[tid].begin(), msh.tet_nodes[tid].end());
         }
         if (debug)
         {
@@ -766,36 +766,39 @@ void mdl_core::import_hfss(string path, string full_path_name)
         {
             for (size_t i = 0; i < 3; i++)
             {
-                msh->facNodes(fid, i) = nodMap[msh->facNodes(fid, i)];
+                msh.fac_nodes[fid][i] = nodMap[msh.fac_nodes[fid][i]];
             }
-            msh->facNodes.row(fid) = arma::sort(msh->facNodes.row(fid));
+            sort(msh.fac_nodes[fid].begin(), msh.fac_nodes[fid].end());
         }
         if (debug)
         {
             std::cout << "newNodPos " << nidx << "\n";
         }
-        arma::mat newNodPos(nidx, 3);
+        // arma::mat newNodPos(nidx, 3);
+        vector<vector<double> > newNodPos(msh.n_nodes);
         for (size_t nid = 0; nid < msh.n_nodes; nid++)
         {
             if (nodFlag[nid])
             {
-                newNodPos.row(nodMap[nid]) = msh->nodPos.row(nid);
+                newNodPos[nodMap[nid]] = msh.nod_pos[nid];
             }
         }
         if (debug)
         {
             std::cout << "newFacNodes " << fidx << "\n";
         }
-        arma::umat newFacNodes(fidx, 3);
+        // arma::umat newFacNodes(fidx, 3);
+        vector<vector<size_t> > newFacNodes(msh.n_faces);
         for (size_t fid = 0; fid < msh.n_faces; fid++)
         {
             if (facFlag[fid])
             {
-                newFacNodes.row(facMap[fid]) = arma::sort(msh->facNodes.row(fid));
+                sort(msh.fac_nodes[fid].begin(), msh.fac_nodes[fid].end());
+                newFacNodes[facMap[fid]] = msh.fac_nodes[fid];
             }
         }
-        msh->nodPos = newNodPos;
-        msh->facNodes = newFacNodes;
+        msh.nod_pos = newNodPos;
+        msh.fac_nodes = newFacNodes;
         msh.n_nodes = nidx;
         msh.n_faces = fidx;
         // remain to assign face labels
@@ -805,8 +808,8 @@ void mdl_core::import_hfss(string path, string full_path_name)
         {
             std::cout << "facLab\n";
         }
-        msh->facLab.resize(msh.n_faces);
-        msh->facLab.fill(msh->maxLab); // non boundary flag
+        msh.fac_lab.assign(msh.n_faces, -1);
+        // msh->facLab.fill(msh->maxLab); // non boundary flag
         for (size_t fid = 0; fid < facHFSStag.size(); fid++)
         {
             for (std::vector<HFSSBnd>::iterator it = bnds.begin(); it != bnds.end(); it++)
@@ -817,8 +820,9 @@ void mdl_core::import_hfss(string path, string full_path_name)
                     {
                         if (std::find(facHFSStag[fid].begin(), facHFSStag[fid].end(), *itids) != facHFSStag[fid].end())
                         {
-                            for (std::vector<BC>::iterator bndit = msh->facBC.begin();
-                                 bndit != msh->facBC.end(); bndit++)
+                            //std::cout << *itids << " ";
+                            for (std::vector<mdl_bc>::iterator bndit = frm.bcs.begin();
+                                 bndit != frm.bcs.end(); bndit++)
                             {
                                 if (bndit->name == it->name)
                                 {
@@ -826,12 +830,13 @@ void mdl_core::import_hfss(string path, string full_path_name)
                                     {
                                         std::cout << " " << it->name << " " << facMap[fid] << " ";
                                     }
-                                    msh->facLab(facMap[fid]) = bndit->label;
-                                    arma::uvec nface(1);
-                                    nface(0) = facMap[fid];
-                                    bndit->Faces = arma::join_cols(bndit->Faces, nface);
+                                    msh.fac_lab[facMap[fid]] = bndit->label;
+                                    //arma::uvec nface(1);
+                                    //nface(0) = facMap[fid];
+                                    //bndit->Faces = arma::join_cols(bndit->Faces, nface);
                                 }
                             }
+                            std::cout << " \n";
                         }
                     }
                 }
@@ -845,8 +850,8 @@ void mdl_core::import_hfss(string path, string full_path_name)
                         {
                             if (std::find(facHFSStag[fid].begin(), facHFSStag[fid].end(), cid[idd]) != facHFSStag[fid].end())
                             {
-                                for (std::vector<BC>::iterator bndit = msh->facBC.begin();
-                                     bndit != msh->facBC.end(); bndit++)
+                                for (std::vector<mdl_mtrl>::iterator bndit = frm.mtrls.begin();
+                                     bndit != frm.mtrls.end(); bndit++)
                                 {
                                     if (bndit->name == it->name)
                                     {
@@ -854,10 +859,10 @@ void mdl_core::import_hfss(string path, string full_path_name)
                                         {
                                             std::cout << " " << it->name << " " << facMap[fid] << " ";
                                         }
-                                        msh->facLab(facMap[fid]) = bndit->label;
-                                        arma::uvec nface(1);
-                                        nface(0) = facMap[fid];
-                                        bndit->Faces = arma::join_cols(bndit->Faces, nface);
+                                        msh.fac_lab[facMap[fid]] = bndit->label;
+                                        //arma::uvec nface(1);
+                                        //nface(0) = facMap[fid];
+                                        //bndit->Faces = arma::join_cols(bndit->Faces, nface);
                                     }
                                 }
                             }
@@ -865,7 +870,16 @@ void mdl_core::import_hfss(string path, string full_path_name)
                     }
                 }
             }
-        */
-       //msh.regularize_mesh();
+        }
     }
+    msh.fac_adj_tet.clear();
+    //msh.regularize_mesh();
+    frm.update_msh_info(msh);
+    //
+}
+
+void mdl_core::write_prj_file(string name)
+{
+    frm.write_prj_file(name);
+    msh.write_prj_file(name);
 }

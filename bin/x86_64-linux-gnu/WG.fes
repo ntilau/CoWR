@@ -1,0 +1,7 @@
+#Formulation EM_E_FD
+#Materials 1
+0 Vacuum 1 1 0 0 vacuum
+#Boundaries 3
+0 PerfE1 PerfectE
+1 1 WavePort 1
+2 2 WavePort 1

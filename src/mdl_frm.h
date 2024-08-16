@@ -52,4 +52,4 @@ public:
     vector<vector<complex<double>>> sol_cmplx;
 };
 
-#endif MDL_FRM_H
+#endif // MDL_FRM_H
