@@ -1,4 +1,4 @@
-## Computing Residuals a.k.a. CORE
+## Computed Residuals a.k.a. CORE
 Generalized version of FES to extend to any Weighted Residuals Methods framework
 The goal is to have an as modular as possible implementation minimizing the need
 for external libraries.

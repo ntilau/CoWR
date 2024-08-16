@@ -61,20 +61,25 @@ void mdl_core::import(string path, string name, string ext)
         system(string("cd " + path + "\\" + name + ".hfssresults\\*.results\\*.cmesh && copy /Y current.* ..\\..\\..\\*").c_str());
 #endif
         import_hfss(path, string(path + "/" + name + ext));
-        //msh.get_mesh_statistics();
 #ifdef __linux__
         ret = system(string("rm -rf " + path + "/current.*").c_str());
 #elif _WIN32
         system(string("del /F /Q current.*").c_str());
 #endif
-        msh.save_vtk_mesh(string(path + "/" + name ));
-        write_prj_file(string(path + "/" + name ));
+        msh.save_vtk_mesh(string(path + "/" + name));
+        write_prj_file(string(path + "/" + name));
     }
+    else if (strcmp(ext.c_str(), ".core") == 0)
+    {
+        read_prj_file(string(path + "/" + name));
+    }
+    msh.get_mesh_statistics();
+    msh.save_vtk_mesh(string(path + "/" + name));
 }
 
 void mdl_core::import_hfss(string path, string full_path_name)
 {
-
+    bool debug = false;
     cout << full_path_name << endl;
     {
         int tmpInt;
@@ -98,10 +103,10 @@ void mdl_core::import_hfss(string path, string full_path_name)
                     iss >> tmpStr;
                     if (tmpStr == "\'Materials\'")
                     {
-                        //cout << line << endl;
+                        // cout << line << endl;
                         while (getline(fileName, line))
                         {
-                            //cout << line << endl;
+                            // cout << line << endl;
                             istringstream iss(line);
                             iss >> tmpStr;
                             if (tmpStr == "$begin")
@@ -330,16 +335,16 @@ void mdl_core::import_hfss(string path, string full_path_name)
                                     }
                                     else if (tmpStr.substr(0, 7) == "Objects")
                                     {
-                                        //if(hfssBoundary.type != "LumpedPort") {
-                                            hfssBoundary.solids.push_back(atoi(string(tmpStr.substr(8, tmpStr.size() - 9)).data()));
-                                            while (iss.good())
-                                            {
-                                                iss >> tmpStr;
-                                                hfssBoundary.solids.push_back(atoi(string(tmpStr.substr(0, tmpStr.size() - 1)).data()));
-                                            }
+                                        // if(hfssBoundary.type != "LumpedPort") {
+                                        hfssBoundary.solids.push_back(atoi(string(tmpStr.substr(8, tmpStr.size() - 9)).data()));
+                                        while (iss.good())
+                                        {
+                                            iss >> tmpStr;
+                                            hfssBoundary.solids.push_back(atoi(string(tmpStr.substr(0, tmpStr.size() - 1)).data()));
+                                        }
                                         //}
-                                        //else
-                                           //hfssBoundary.faces.push_back(atoi(string(tmpStr.substr(8, tmpStr.size() - 9)).data()));
+                                        // else
+                                        // hfssBoundary.faces.push_back(atoi(string(tmpStr.substr(8, tmpStr.size() - 9)).data()));
                                     }
                                     else if (tmpStr == "$end")
                                     {
@@ -445,7 +450,7 @@ void mdl_core::import_hfss(string path, string full_path_name)
             for (size_t i = 0; i < numFaces; i++)
             {
                 getline(fileName, line);
-                //cout << line << endl;
+                // cout << line << endl;
                 std::istringstream iss(line);
                 iss >> tmpStr; // f
                 iss >> tmpInt; // id
@@ -611,7 +616,6 @@ void mdl_core::import_hfss(string path, string full_path_name)
     msh.get_mesh_statistics();
     cout << "Finalizing ..." << endl;
     {
-        bool debug = true;
         tetFlag = std::vector<bool>(msh.n_tetras, false);
         facFlag = std::vector<bool>(msh.n_faces, false);
         nodFlag = std::vector<bool>(msh.n_nodes, false);
@@ -691,7 +695,6 @@ void mdl_core::import_hfss(string path, string full_path_name)
             std::cout << "newTetNodes newTetFaces newTetLab " << tidx << "\n";
         }
 
-        
         vector<vector<size_t>> newTetNodes(tidx);
         vector<vector<size_t>> newTetFaces(tidx);
         vector<int> newTetLab(tidx);
@@ -712,7 +715,7 @@ void mdl_core::import_hfss(string path, string full_path_name)
         {
             std::cout << "tetMtrl newTetras\n";
         }
-        
+
         for (size_t mtrid = 0; mtrid < mtrls.size(); mtrid++)
         {
             std::vector<size_t> newTetras;
@@ -767,7 +770,8 @@ void mdl_core::import_hfss(string path, string full_path_name)
                 msh.tet_nodes[tid][i] = nodMap[msh.tet_nodes[tid][i]];
                 msh.tet_faces[tid][i] = facMap[msh.tet_faces[tid][i]];
             }
-            std:sort(msh.tet_nodes[tid].begin(), msh.tet_nodes[tid].end());
+        std:
+            sort(msh.tet_nodes[tid].begin(), msh.tet_nodes[tid].end());
         }
         if (debug)
         {
@@ -786,7 +790,7 @@ void mdl_core::import_hfss(string path, string full_path_name)
             std::cout << "newNodPos " << nidx << "\n";
         }
         // arma::mat newNodPos(nidx, 3);
-        vector<vector<double> > newNodPos(msh.n_nodes);
+        vector<vector<double>> newNodPos(msh.n_nodes);
         for (size_t nid = 0; nid < msh.n_nodes; nid++)
         {
             if (nodFlag[nid])
@@ -799,7 +803,7 @@ void mdl_core::import_hfss(string path, string full_path_name)
             std::cout << "newFacNodes " << fidx << "\n";
         }
         // arma::umat newFacNodes(fidx, 3);
-        vector<vector<size_t> > newFacNodes(msh.n_faces);
+        vector<vector<size_t>> newFacNodes(msh.n_faces);
         for (size_t fid = 0; fid < msh.n_faces; fid++)
         {
             if (facFlag[fid])
@@ -831,7 +835,7 @@ void mdl_core::import_hfss(string path, string full_path_name)
                     {
                         if (std::find(facHFSStag[fid].begin(), facHFSStag[fid].end(), *itids) != facHFSStag[fid].end())
                         {
-                            //std::cout << *itids << " ";
+                            // std::cout << *itids << " ";
                             for (std::vector<mdl_bc>::iterator bndit = frm.bcs.begin();
                                  bndit != frm.bcs.end(); bndit++)
                             {
@@ -843,12 +847,12 @@ void mdl_core::import_hfss(string path, string full_path_name)
                                     }
                                     msh.fac_lab[facMap[fid]] = bndit->label;
                                     bndit->faces.push_back(facMap[fid]);
-                                    //arma::uvec nface(1);
-                                    //nface(0) = facMap[fid];
-                                    //bndit->Faces = arma::join_cols(bndit->Faces, nface);
+                                    // arma::uvec nface(1);
+                                    // nface(0) = facMap[fid];
+                                    // bndit->Faces = arma::join_cols(bndit->Faces, nface);
                                 }
                             }
-                            std::cout << " \n";
+                            // std::cout << " \n";
                         }
                     }
                 }
@@ -873,9 +877,9 @@ void mdl_core::import_hfss(string path, string full_path_name)
                                         }
                                         msh.fac_lab[facMap[fid]] = bndit->label;
                                         bndit->faces.push_back(facMap[fid]);
-                                        //arma::uvec nface(1);
-                                        //nface(0) = facMap[fid];
-                                        //bndit->Faces = arma::join_cols(bndit->Faces, nface);
+                                        // arma::uvec nface(1);
+                                        // nface(0) = facMap[fid];
+                                        // bndit->Faces = arma::join_cols(bndit->Faces, nface);
                                     }
                                 }
                             }
@@ -884,13 +888,10 @@ void mdl_core::import_hfss(string path, string full_path_name)
                 }
             }
         }
-        if (debug)
-            std::cout << "\n";
     }
-    //msh.fac_adj_tet.clear();
-    //msh.regularize_mesh();
-    //frm.update_msh_info(msh);
-
+    // msh.fac_adj_tet.clear();
+    // msh.regularize_mesh();
+    // frm.update_msh_info(msh);
 }
 
 void mdl_core::read_prj_file(string name)
@@ -899,7 +900,6 @@ void mdl_core::read_prj_file(string name)
     sld.read_prj_file(name);
     msh.read_prj_file(name);
 }
-
 
 void mdl_core::write_prj_file(string name)
 {

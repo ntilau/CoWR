@@ -46,4 +46,4 @@ clean:
 
 .PHONY: test
 test:
-	$(BINDIR)/$(BIN) $(BINDIR)/Strip.hfss
+	$(BINDIR)/$(BIN) $(BINDIR)/Strip.core

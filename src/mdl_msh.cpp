@@ -163,8 +163,7 @@ void mdl_msh::read_tetgen_files(string &name)
         string(name + "." + str_lvl.str() + ".node").c_str());
     if (tet_node_file.is_open())
     {
-        cout << "Loading " << string(name + "." + str_lvl.str() + ".node")
-                  << "\n";
+        cout << "Loading " << string(name + "." + str_lvl.str() + ".node") << "\n";
         iss.clear();
         do
         {
@@ -477,6 +476,7 @@ mdl_msh::~mdl_msh()
 
 void mdl_msh::get_mesh_statistics()
 {
+    cout << "type = " << type << "\n";
     cout << "tet_nodes = " << tet_nodes.size() << "\n";
     cout << "tet_edges = " << tet_edges.size() << "\n";
     cout << "tet_faces = " << tet_faces.size() << "\n";
@@ -524,12 +524,12 @@ void mdl_msh::clear()
 
 void mdl_msh::regularize_mesh()
 {
-    max_edg_marker = -INT_MAX;
-    max_fac_marker = -INT_MAX;
-    max_tet_marker = -INT_MAX;
+    max_edg_marker = INT_MIN;
+    max_fac_marker = INT_MIN;
+    max_tet_marker = INT_MIN;
     map<pair<size_t, size_t>, size_t> edgesMap;
     map<tuple<size_t, size_t, size_t>, size_t> facesMap;
-    if (strcmp(type.data(), "EDGE"))
+    if (strcmp(type.c_str(), "EDGE") == 0)
     { // if not edges
         for (size_t i = 0; i < n_edges; i++)
         {
@@ -557,7 +557,7 @@ void mdl_msh::regularize_mesh()
             }
         }
     }
-    if (strcmp(type.data(), "TETRA") == 0)
+    if (strcmp(type.c_str(), "TETRA") == 0)
     {
         tet_edges.clear();
         tet_faces.clear();
@@ -565,7 +565,7 @@ void mdl_msh::regularize_mesh()
         tet_edges.resize(n_tetras);
         tet_faces.resize(n_tetras);
         fac_adj_tet.resize(n_faces);
-        get_mesh_statistics();
+        //get_mesh_statistics();
         for (size_t i = 0; i < n_tetras; i++)
         {
             sort(tet_nodes[i].begin(), tet_nodes[i].end());
@@ -601,7 +601,7 @@ void mdl_msh::regularize_mesh()
         max_fac_marker = max(max_fac_marker, fac_lab[i]);
     for (size_t i = 0; i < tet_lab.size(); i++)
         max_tet_marker = max(max_tet_marker, tet_lab[i]);
-    get_mesh_statistics();
+    //get_mesh_statistics();
 }
 
 void mdl_msh::refine_homogeneous()
