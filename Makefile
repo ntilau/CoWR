@@ -9,9 +9,9 @@ EXTRA =
 
 BIN = fes$(VER)
 
-CC = $(ARCH)-$(PLAT)-g++ -w
+CC = $(ARCH)-$(PLAT)-g++
 ifeq ($(ARCH), aarch64)
-	CC = g++ -w
+	CC = g++
 endif
 INCDIR = -I./dep/include
 LIBDIR = -L./dep/lib/$(ARCH)-$(PLAT)/
@@ -49,4 +49,4 @@ clean:
 
 .PHONY: test
 test:
-	$(BINDIR)/$(BIN) WR10 1e9
+	$(BINDIR)/$(BIN) $(BINDIR)/Strip.hfss

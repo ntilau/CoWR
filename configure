@@ -1,4 +1,4 @@
 #!/bin/bash
 # Ubuntu prerequisites installation
-sudo apt install -y libc6-dev gcc g++ gfortran libmumps-dev libmumps-seq-dev libopenblas-dev libarpack2-dev libtet1.5-dev libtriangle-dev 
-#libarmadillo-dev libgmm++-dev
+sudo apt install -y libc6-dev gcc g++ gfortran 
+# libmumps-dev libmumps-seq-dev libopenblas-dev libarpack2-dev libtet1.5-dev libtriangle-dev libarmadillo-dev libgmm++-dev

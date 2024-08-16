@@ -1,2 +1,13 @@
 .vscode/
 obj/
+initial.*
+*.tmp
+*.auto
+*.lock
+*.semaphore
+*.sd
+*.asol*
+*.profile
+*.tv?
+*.nv?
+fields.*

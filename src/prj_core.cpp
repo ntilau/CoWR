@@ -29,7 +29,7 @@ prj_core::prj_core(const std::string& name) : std::filesystem::path(name)
     std::cout << get_loc_time() << std::endl;
     std::cout << get_info() << std::endl;
     std::cout << "--------------------------------" << std::endl;
-    std::cout << "Opening " << c_str() << std::endl;
+    std::cout << "Opening " << this->c_str() << std::endl;
     model.import( parent_path(), stem(), extension());
     std::cout << get_stats(*this);
 }

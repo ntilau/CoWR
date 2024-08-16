@@ -91,10 +91,14 @@ protected:
             return 1e-9;
         else if (fact == 'p')
             return 1e-12;
+        else if (fact == 'f')
+            return 1e-15;
+        else if (fact == 'a')
+            return 1e-18;
         else
             return 1;
     }
-    const char *SI_chars = "munp";
+    const char *SI_chars = "munpfa";
 private:
     std::map<string, HFSSMtrl > mtrls;
     std::vector<HFSSBnd > bnds;

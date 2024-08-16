@@ -60,11 +60,11 @@ void mdl_core::import(string path, string name, string ext)
         import_hfss(path, string(path + "/" + name + ext));
         msh.get_mesh_statistics();
 #ifdef __linux__
-        // system(string("rm -rv " + path + "/current.*").c_str());
+        system(string("rm -rf " + path + "/current.*").c_str());
 #elif _WIN32
         system(string("del /F /Q current.*").c_str());
 #endif
-        // FinalizeMesh();
+        FinalizeMesh();
     }
 }
 
