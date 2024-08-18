@@ -26,6 +26,7 @@ public:
     void read_triangle_files(string &name);
     void save_vtk_mesh(string);
     void regularize_mesh();
+    void complete_mesh();
     void refine_homogeneous();
     void get_mesh_statistics();
     void clear();

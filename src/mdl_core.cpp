@@ -613,7 +613,7 @@ void mdl_core::import_hfss(string path, string full_path_name)
             throw std::string(path + " project file \"current.hyd\" not available");
         }
     }
-    msh.get_mesh_statistics();
+    //msh.get_mesh_statistics();
     cout << "Finalizing ..." << endl;
     {
         tetFlag = std::vector<bool>(msh.n_tetras, false);
