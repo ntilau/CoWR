@@ -23,7 +23,7 @@ mdl_msh::mdl_msh()
 void mdl_msh::write_prj_file(string &name)
 {
     ofstream msh_out_file(string(name + ".core").c_str(),
-                               ios::out | ios::ate | ios::app);
+                          ios::out | ios::ate | ios::app);
     msh_out_file << "#Mesh " << type << "\n";
     msh_out_file << "#Nodes " << n_nodes << "\n";
     for (size_t i = 0; i < n_nodes; i++)
@@ -143,7 +143,8 @@ void mdl_msh::read_prj_file(string &name)
         }
     }
     msh_in_file.close();
-    regularize_mesh();
+    // regularize_mesh(); // ensures ordering is OK
+    complete_mesh();
 }
 
 void mdl_msh::read_tetgen_files(string &name)
@@ -195,7 +196,7 @@ void mdl_msh::read_tetgen_files(string &name)
     if (tet_edge_file.is_open())
     {
         cout << "Loading " << string(name + "." + str_lvl.str() + ".edge")
-                  << "\n";
+             << "\n";
         unsigned int dim;
         iss.clear();
         do
@@ -231,7 +232,7 @@ void mdl_msh::read_tetgen_files(string &name)
     if (tet_face_file.is_open())
     {
         cout << "Loading " << string(name + "." + str_lvl.str() + ".face")
-                  << "\n";
+             << "\n";
         unsigned int dim;
         iss.clear();
         do
@@ -266,7 +267,7 @@ void mdl_msh::read_tetgen_files(string &name)
     if (tet_ele_file.is_open())
     {
         cout << "Loading " << string(name + "." + str_lvl.str() + ".ele")
-                  << "\n";
+             << "\n";
         unsigned int dim;
         iss.clear();
         do
@@ -318,7 +319,7 @@ void mdl_msh::read_triangle_files(string &name)
     if (tria_node_file.is_open())
     {
         cout << "Loading " << string(name + "." + str_lvl.str() + ".node")
-                  << "\n";
+             << "\n";
         iss.clear();
         do
         {
@@ -350,7 +351,7 @@ void mdl_msh::read_triangle_files(string &name)
     if (tria_edge_file.is_open())
     {
         cout << "Loading " << string(name + "." + str_lvl.str() + ".edge")
-                  << "\n";
+             << "\n";
         unsigned int dim;
         iss.clear();
         do
@@ -386,7 +387,7 @@ void mdl_msh::read_triangle_files(string &name)
     if (tria_ele_file.is_open())
     {
         cout << "Loading " << string(name + "." + str_lvl.str() + ".ele")
-                  << "\n";
+             << "\n";
         unsigned int dim;
         iss.clear();
         do
@@ -550,7 +551,7 @@ void mdl_msh::regularize_mesh()
             fac_edges[i].push_back(
                 edgesMap[make_pair(fac_nodes[i][0], fac_nodes[i][1])]);
             facesMap[make_tuple(fac_nodes[i][0], fac_nodes[i][1],
-                                     fac_nodes[i][2])] = i;
+                                fac_nodes[i][2])] = i;
             for (size_t j = 0; j < 3; j++)
             {
                 edg_adj_fac[fac_edges[i][j]].push_back(i);
@@ -565,7 +566,7 @@ void mdl_msh::regularize_mesh()
         tet_edges.resize(n_tetras);
         tet_faces.resize(n_tetras);
         fac_adj_tet.resize(n_faces);
-        //get_mesh_statistics();
+        // get_mesh_statistics();
         for (size_t i = 0; i < n_tetras; i++)
         {
             sort(tet_nodes[i].begin(), tet_nodes[i].end());
@@ -601,30 +602,167 @@ void mdl_msh::regularize_mesh()
         max_fac_marker = max(max_fac_marker, fac_lab[i]);
     for (size_t i = 0; i < tet_lab.size(); i++)
         max_tet_marker = max(max_tet_marker, tet_lab[i]);
-    //get_mesh_statistics();
+    // get_mesh_statistics();
+}
+
+void mdl_msh::complete_mesh()
+{
+    map<pair<size_t, size_t>, size_t> edgesMap;
+    map<tuple<size_t, size_t, size_t>, size_t> facesMap;
+    vector<size_t> tmpEdg(2), tmpFac(3);
+    pair<size_t, size_t> newEdg;
+    tuple<size_t, size_t, size_t> newFac;
+    size_t eidx = 0, fidx = 0;
+    // edg_nodes.clear();
+    for (size_t i = 0; i < edg_nodes.size(); i++)
+    {
+        sort(edg_nodes[i].begin(), edg_nodes[i].end());
+        edgesMap[make_pair(edg_nodes[i][0], edg_nodes[i][1])] = i;
+    }
+    for (size_t i = 0; i < fac_nodes.size(); i++)
+    {
+        sort(fac_nodes[i].begin(), fac_nodes[i].end());
+        facesMap[make_tuple(fac_nodes[i][0], fac_nodes[i][1], fac_nodes[i][2])] = i;
+    }
+    // populating maps
+    for (size_t i = 0; i < n_tetras; i++)
+    {
+        newEdg = make_pair(tet_nodes[i][0], tet_nodes[i][1]);
+        if (edgesMap.find(newEdg) == edgesMap.end())
+        {
+            edgesMap[newEdg] = eidx++;
+            edg_nodes.push_back(vector<size_t>{newEdg.first, newEdg.second});
+        }
+        newEdg = make_pair(tet_nodes[i][0], tet_nodes[i][2]);
+        if (edgesMap.find(newEdg) == edgesMap.end())
+        {
+            edgesMap[newEdg] = eidx++;
+            edg_nodes.push_back(vector<size_t>{newEdg.first, newEdg.second});
+        }
+        newEdg = make_pair(tet_nodes[i][0], tet_nodes[i][3]);
+        if (edgesMap.find(newEdg) == edgesMap.end())
+        {
+            edgesMap[newEdg] = eidx++;
+            edg_nodes.push_back(vector<size_t>{newEdg.first, newEdg.second});
+        }
+        newEdg = make_pair(tet_nodes[i][1], tet_nodes[i][2]);
+        if (edgesMap.find(newEdg) == edgesMap.end())
+        {
+            edgesMap[newEdg] = eidx++;
+            edg_nodes.push_back(vector<size_t>{newEdg.first, newEdg.second});
+        }
+        newEdg = make_pair(tet_nodes[i][1], tet_nodes[i][3]);
+        if (edgesMap.find(newEdg) == edgesMap.end())
+        {
+            edgesMap[newEdg] = eidx++;
+            edg_nodes.push_back(vector<size_t>{newEdg.first, newEdg.second});
+        }
+        newEdg = make_pair(tet_nodes[i][2], tet_nodes[i][3]);
+        if (edgesMap.find(newEdg) == edgesMap.end())
+        {
+            edgesMap[newEdg] = eidx++;
+            edg_nodes.push_back(vector<size_t>{newEdg.first, newEdg.second});
+        }
+        newFac = make_tuple(tet_nodes[i][1], tet_nodes[i][2], tet_nodes[i][3]);
+        if (facesMap.find(newFac) == facesMap.end())
+        {
+            facesMap[newFac] = fidx++;
+            fac_nodes.push_back(vector<size_t>{get<0>(newFac), get<1>(newFac), get<2>(newFac)});
+        }
+        newFac = make_tuple(tet_nodes[i][0], tet_nodes[i][2], tet_nodes[i][3]);
+        if (facesMap.find(newFac) == facesMap.end())
+        {
+            facesMap[newFac] = fidx++;
+            fac_nodes.push_back(vector<size_t>{get<0>(newFac), get<1>(newFac), get<2>(newFac)});
+        }
+        newFac = make_tuple(tet_nodes[i][0], tet_nodes[i][1], tet_nodes[i][3]);
+        if (facesMap.find(newFac) == facesMap.end())
+        {
+            facesMap[newFac] = fidx++;
+            fac_nodes.push_back(vector<size_t>{get<0>(newFac), get<1>(newFac), get<2>(newFac)});
+        }
+        newFac = make_tuple(tet_nodes[i][0], tet_nodes[i][1], tet_nodes[i][2]);
+        if (facesMap.find(newFac) == facesMap.end())
+        {
+            facesMap[newFac] = fidx++;
+            fac_nodes.push_back(vector<size_t>{get<0>(newFac), get<1>(newFac), get<2>(newFac)});
+        }
+    }
+    n_edges = edg_nodes.size();
+    n_faces = fac_nodes.size();
+    // populating tets related data
+    tet_edges.clear();
+    tet_faces.clear();
+    fac_adj_tet.clear();
+    tet_edges.resize(n_tetras);
+    tet_faces.resize(n_tetras);
+    // get_mesh_statistics();
+    for (size_t i = 0; i < n_tetras; i++)
+    {
+        // sort(tet_nodes[i].begin(), tet_nodes[i].end());
+        tet_edges[i].push_back(
+            edgesMap[make_pair(tet_nodes[i][0], tet_nodes[i][1])]);
+        tet_edges[i].push_back(
+            edgesMap[make_pair(tet_nodes[i][0], tet_nodes[i][2])]);
+        tet_edges[i].push_back(
+            edgesMap[make_pair(tet_nodes[i][0], tet_nodes[i][3])]);
+        tet_edges[i].push_back(
+            edgesMap[make_pair(tet_nodes[i][1], tet_nodes[i][2])]);
+        tet_edges[i].push_back(
+            edgesMap[make_pair(tet_nodes[i][1], tet_nodes[i][3])]);
+        tet_edges[i].push_back(
+            edgesMap[make_pair(tet_nodes[i][2], tet_nodes[i][3])]);
+        tet_faces[i].push_back(facesMap[make_tuple(
+            tet_nodes[i][1], tet_nodes[i][2], tet_nodes[i][3])]);
+        tet_faces[i].push_back(facesMap[make_tuple(
+            tet_nodes[i][0], tet_nodes[i][2], tet_nodes[i][3])]);
+        tet_faces[i].push_back(facesMap[make_tuple(
+            tet_nodes[i][0], tet_nodes[i][1], tet_nodes[i][3])]);
+        tet_faces[i].push_back(facesMap[make_tuple(
+            tet_nodes[i][0], tet_nodes[i][1], tet_nodes[i][2])]);
+    }
+    fac_adj_tet.resize(n_faces);
+    for (size_t i = 0; i < n_tetras; i++)
+        for (size_t j = 0; j < 4; j++)
+            fac_adj_tet[tet_faces[i][j]].push_back(i);
+    fac_edges.resize(n_faces);
+    for (size_t i = 0; i < n_faces; i++)
+    {
+        sort(fac_nodes[i].begin(), fac_nodes[i].end());
+        fac_edges[i].push_back(
+            edgesMap[make_pair(fac_nodes[i][1], fac_nodes[i][2])]);
+        fac_edges[i].push_back(
+            edgesMap[make_pair(fac_nodes[i][0], fac_nodes[i][2])]);
+        fac_edges[i].push_back(
+            edgesMap[make_pair(fac_nodes[i][0], fac_nodes[i][1])]);
+    }
+    edg_adj_fac.resize(n_edges);
+    for (size_t i = 0; i < n_faces; i++)
+        for (size_t j = 0; j < 3; j++)
+            edg_adj_fac[fac_edges[i][j]].push_back(i);
 }
 
 void mdl_msh::refine_homogeneous()
 {
     vector<vector<double>> new_nod_pos(n_nodes + n_edges,
-                                                 vector<double>(3));
+                                       vector<double>(3));
     vector<vector<size_t>> new_tet_nodes(n_tetras * 8,
-                                                   vector<size_t>(4));
+                                         vector<size_t>(4));
     vector<vector<size_t>> new_tet_edges(n_tetras * 8,
-                                                   vector<size_t>(6));
+                                         vector<size_t>(6));
     vector<vector<size_t>> new_tet_faces(n_tetras * 8,
-                                                   vector<size_t>(4));
+                                         vector<size_t>(4));
     vector<vector<size_t>> new_fac_nodes(n_faces * 4 + n_tetras * 8,
-                                                   vector<size_t>(3));
+                                         vector<size_t>(3));
     vector<vector<size_t>> new_fac_edges(n_faces * 4 + n_tetras * 8,
-                                                   vector<size_t>(3));
+                                         vector<size_t>(3));
     vector<vector<size_t>> new_edg_nodes(
         n_edges * 2 + n_faces * 3 + n_tetras, vector<size_t>(2));
     vector<int> new_edg_lab(n_edges * 2 + n_faces * 3 + n_tetras, 0);
     vector<int> new_fac_lab(n_faces * 4 + n_tetras * 8, 0);
     vector<int> new_tet_lab(n_tetras * 8, 0);
     vector<vector<size_t>> new_edg_adj_fac(n_edges * 2 + n_faces * 3 +
-                                                     n_tetras);
+                                           n_tetras);
     vector<vector<size_t>> new_fac_adj_tet(n_faces * 4 + n_tetras * 8);
     //
     map<pair<size_t, size_t>, size_t> edgesMap;
@@ -732,7 +870,7 @@ void mdl_msh::refine_homogeneous()
                 fac_tmp[2] = nod_glob[tet_fac_nodes_loc_map_id[3 * i + 2]];
                 sort(fac_tmp.begin(), fac_tmp.end());
                 if (facesMap.find(make_tuple(fac_tmp[0], fac_tmp[1],
-                                                  fac_tmp[2])) == facesMap.end())
+                                             fac_tmp[2])) == facesMap.end())
                 {
                     facesMap[make_tuple(fac_tmp[0], fac_tmp[1], fac_tmp[2])] =
                         fac_lvl;

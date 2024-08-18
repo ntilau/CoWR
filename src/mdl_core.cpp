@@ -66,7 +66,6 @@ void mdl_core::import(string path, string name, string ext)
 #elif _WIN32
         system(string("del /F /Q current.*").c_str());
 #endif
-        msh.save_vtk_mesh(string(path + "/" + name));
         write_prj_file(string(path + "/" + name));
     }
     else if (strcmp(ext.c_str(), ".core") == 0)
