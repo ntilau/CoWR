@@ -52,7 +52,7 @@ void mdl_core::create_tri_mesh()
 void mdl_core::import(string path, string name, string ext)
 {
     int ret = 0;
-    if (strcmp(ext.c_str(), ".hfss") == 0)
+    if (strcmp(ext.c_str(), ".hfss") == 0) // convert HFSS project to CORE
     {
         cout << "HFSS project files:" << endl;
 #ifdef __linux__
@@ -62,17 +62,19 @@ void mdl_core::import(string path, string name, string ext)
 #endif
         import_hfss(path, string(path + "/" + name + ext));
 #ifdef __linux__
-        ret = system(string("rm -rf " + path + "/current.*").c_str());
+        ret = system(string("rm -f " + path + "/current.*").c_str());
 #elif _WIN32
         system(string("del /F /Q current.*").c_str());
 #endif
         write_prj_file(string(path + "/" + name));
     }
-    else if (strcmp(ext.c_str(), ".core") == 0)
+    else if (strcmp(ext.c_str(), ".core") == 0) // import CORE project data
     {
         read_prj_file(string(path + "/" + name));
     }
+    // PRE_PROCESSING
     msh.get_mesh_statistics();
+    // POST_PROCESSING
     msh.save_vtk_mesh(string(path + "/" + name));
 }
 
@@ -290,7 +292,7 @@ void mdl_core::import_hfss(string path, string full_path_name)
                     {
                         while (getline(fileName, line))
                         {
-                            cout << line << endl;
+                            // cout << line << endl;
                             istringstream iss(line);
                             iss >> tmpStr; // $begin
                             if (tmpStr == "$begin")
@@ -612,7 +614,7 @@ void mdl_core::import_hfss(string path, string full_path_name)
             throw std::string(path + " project file \"current.hyd\" not available");
         }
     }
-    //msh.get_mesh_statistics();
+    // msh.get_mesh_statistics();
     cout << "Finalizing ..." << endl;
     {
         tetFlag = std::vector<bool>(msh.n_tetras, false);
@@ -888,9 +890,11 @@ void mdl_core::import_hfss(string path, string full_path_name)
             }
         }
     }
-    // msh.fac_adj_tet.clear();
-    // msh.regularize_mesh();
-    // frm.update_msh_info(msh);
+    //msh.fac_adj_tet.clear();
+    //msh.fac_nodes.clear();
+    //msh.regularize_mesh();
+    //frm.update_msh_info(msh);
+    //msh.complete_mesh();
 }
 
 void mdl_core::read_prj_file(string name)

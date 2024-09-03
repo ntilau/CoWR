@@ -624,9 +624,11 @@ void mdl_msh::complete_mesh()
         sort(fac_nodes[i].begin(), fac_nodes[i].end());
         facesMap[make_tuple(fac_nodes[i][0], fac_nodes[i][1], fac_nodes[i][2])] = i;
     }
+
     // populating maps
     for (size_t i = 0; i < n_tetras; i++)
     {
+        sort(tet_nodes[i].begin(), tet_nodes[i].end());
         newEdg = make_pair(tet_nodes[i][0], tet_nodes[i][1]);
         if (edgesMap.find(newEdg) == edgesMap.end())
         {
@@ -699,7 +701,7 @@ void mdl_msh::complete_mesh()
     // get_mesh_statistics();
     for (size_t i = 0; i < n_tetras; i++)
     {
-        // sort(tet_nodes[i].begin(), tet_nodes[i].end());
+        sort(tet_nodes[i].begin(), tet_nodes[i].end());
         tet_edges[i].push_back(
             edgesMap[make_pair(tet_nodes[i][0], tet_nodes[i][1])]);
         tet_edges[i].push_back(
@@ -740,6 +742,17 @@ void mdl_msh::complete_mesh()
     for (size_t i = 0; i < n_faces; i++)
         for (size_t j = 0; j < 3; j++)
             edg_adj_fac[fac_edges[i][j]].push_back(i);
+    // populating domains data
+    n_domains = 1;
+    dom_tetras.resize(1);
+    dom_faces.resize(1);
+    for (size_t i = 0; i < n_domains; i++){
+        for( size_t j = 0; j < n_tetras; j++)
+            dom_tetras[i].push_back(j);
+        for( size_t j = 0; j < n_faces; j++)
+            if (fac_adj_tet[j].size() == 1)
+                dom_faces[i].push_back(j);
+    }
 }
 
 void mdl_msh::refine_homogeneous()
