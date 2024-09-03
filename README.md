@@ -19,3 +19,7 @@ Download [x86_64-linux-gnu](https://github.com/ntilau/core/raw/master/bin/x86_64
 ```shell
 wget https://github.com/ntilau/core/raw/master/bin/x86_64-linux-gnu/core
 ```
+
+# References
+[The Method of Weighted Residuals: A General Approach to Deriving Time- and Frequency-Domain Numerical Methods](https://www.cs.buap.mx/~sandoval/MetodosNumericos/MetNumCEROS/MarcoAntonioRamires.pdf)
+, Zhizhang Chen and Michel Ney, IEEE Antennas and Propagation Magazine, Vol. 51, No.1, February 2009
