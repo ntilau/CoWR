@@ -15,6 +15,12 @@
 #include <psapi.h>
 #include <windows.h>
 #include <winsock2.h>
+#elif __APPLE__
+#include <sys/resource.h>
+#include <sys/time.h>
+#include <thread>
+#include <unistd.h>
+#include <limits.h>
 #else
 #error "OS not supported!"
 #endif
@@ -72,7 +78,7 @@ std::string prj_core::get_info()
     if (GlobalMemoryStatusEx(&statex))
         memory = statex.ullAvailPhys / 1048576;
 #else
-#error "OS not supported!"
+//#error "OS not supported!"
 #endif
     tag << "Machine = " << host << " (" << user << ")\n";
     tag << "Memory  = " << memory << " MB\n";

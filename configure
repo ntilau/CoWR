@@ -1,4 +1,18 @@
 #!/bin/bash
-# Ubuntu prerequisites installation
-sudo apt install -y libc6-dev gcc g++ gfortran 
-# libmumps-dev libmumps-seq-dev libopenblas-dev libarpack2-dev libtet1.5-dev libtriangle-dev libarmadillo-dev libgmm++-dev
+os=$(uname) 
+echo $os
+if [ "$os" == "Arch" ]; then   
+  echo "Arch Linux detected" 
+elif [ "$os" == "Darwin" ]; then   
+  echo "Mac OS X detected" 
+  brew install gcc
+  brew install gfortran
+elif [ "$os" == "Ubuntu" ]; then   
+  echo "Ubuntu detected"
+  sudo apt install -y libc6-dev gcc g++ gfortran 
+  # libmumps-dev libmumps-seq-dev libopenblas-dev libarpack2-dev libtet1.5-dev libtriangle-dev libarmadillo-dev libgmm++-dev
+else   
+  echo "Unknown OS detected"
+fi
+
+

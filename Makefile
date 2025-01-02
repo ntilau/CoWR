@@ -23,6 +23,14 @@ LFLAGS = $(LIBDIR) -std=c++17 -fopenmp -static \
 	-ltet -ltriangle \
 	-larpack -lopenblas -lgfortran -lquadmath \
 	-Wl,--whole-archive -lpthread -Wl,--no-whole-archive
+
+CFLAGS = $(INCDIR) -std=c++17 -O2 -DTETLIBRARY -DTRILIBRARY
+LFLAGS = $(LIBDIR) -std=c++17 \
+	-lsmumps -ldmumps -lcmumps -lzmumps -lmumps_common -lmpiseq -lpord \
+	-ltet -ltriangle \
+	-larpack -lopenblas 
+#	-lgfortran -lquadmath
+
 SRCS=$(wildcard  $(SRCDIR)/*.cpp)
 OBJS=$(patsubst $(SRCDIR)/%.cpp, $(OBJDIR)/%.o, $(SRCS))
 
