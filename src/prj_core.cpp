@@ -4,7 +4,7 @@
 #include <sstream>
 #include <string>
 
-#ifdef __linux__
+#if defined(__linux__) || defined(__APPLE__)
 #include <sys/resource.h>
 #include <sys/time.h>
 #include <thread>
@@ -15,12 +15,6 @@
 #include <psapi.h>
 #include <windows.h>
 #include <winsock2.h>
-#elif __APPLE__
-#include <sys/resource.h>
-#include <sys/time.h>
-#include <thread>
-#include <unistd.h>
-#include <limits.h>
 #else
 #error "OS not supported!"
 #endif
@@ -31,7 +25,7 @@
 prj_core::prj_core(const std::string& name) : std::filesystem::path(name)
 {
     tic();
-    std::cout << "--- Computed Residuals ---" << std::endl;
+    std::cout << "--- Compute Residuals ---" << std::endl;
     std::cout << get_loc_time() << std::endl;
     std::cout << get_info() << std::endl;
     std::cout << "--------------------------------" << std::endl;
@@ -44,14 +38,15 @@ prj_core::~prj_core()
 {
 }
 
+
 std::string prj_core::get_info()
 {
     std::stringstream tag;
     std::string host, user, memory, cores, threads;
-#ifdef __linux__
-    char hostname[HOST_NAME_MAX];
-	char login_r[LOGIN_NAME_MAX];
-    gethostname(hostname, HOST_NAME_MAX);
+#if defined(__linux__) || defined(__APPLE__)
+    char hostname[64];
+	char login_r[32];
+    gethostname(hostname, 64);
 	//getlogin_r(login_r, LOGIN_NAME_MAX);
     const char* username = getlogin();
     const char* userenv = getenv("USER");
@@ -78,7 +73,7 @@ std::string prj_core::get_info()
     if (GlobalMemoryStatusEx(&statex))
         memory = statex.ullAvailPhys / 1048576;
 #else
-//#error "OS not supported!"
+#error "OS not supported!"
 #endif
     tag << "Machine = " << host << " (" << user << ")\n";
     tag << "Memory  = " << memory << " MB\n";
@@ -119,7 +114,7 @@ std::string prj_core::get_proc_mem()
 {
     std::stringstream out;
     double physiPeak, physiPres;
-#ifdef __linux__
+#if defined(__linux__) || defined(__APPLE__)
     long pages = sysconf(_SC_PHYS_PAGES);
     long page_size = sysconf(_SC_PAGE_SIZE);
     int who = RUSAGE_SELF;

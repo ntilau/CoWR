@@ -4,32 +4,24 @@ ARCH = $(shell uname -m)
 #ARCH = aarch64
 PLAT = $(shell uname -s | tr '[:upper:]' '[:lower:]')-gnu
 # PLAT = w64-mingw32
-EXTRA = 
+EXTRA = -bundle -undefined dynamic_lookup
 # EXTRA = -lpsapi -liphlpapi
 
 BIN = core
 
 CC = g++
 INCDIR = -I./dep/include
-LIBDIR = -L./dep/lib/$(ARCH)-$(PLAT)/
+LIBDIR = -L./dep/lib/$(ARCH)-$(PLAT)/ -L/opt/homebrew/Cellar/gcc/14.2.0_1/lib/gcc/current/
 
 BINDIR  = ./bin/$(ARCH)-$(PLAT)
 OBJDIR  = ./obj/$(ARCH)-$(PLAT)
 SRCDIR  = ./src
 
-CFLAGS = $(INCDIR) -std=c++17 -fopenmp -O2 -DTETLIBRARY -DTRILIBRARY
-LFLAGS = $(LIBDIR) -std=c++17 -fopenmp -static \
-	-lsmumps -ldmumps -lcmumps -lzmumps -lmumps_common -lmpiseq -lpord \
-	-ltet -ltriangle \
-	-larpack -lopenblas -lgfortran -lquadmath \
-	-Wl,--whole-archive -lpthread -Wl,--no-whole-archive
-
 CFLAGS = $(INCDIR) -std=c++17 -O2 -DTETLIBRARY -DTRILIBRARY
 LFLAGS = $(LIBDIR) -std=c++17 \
 	-lsmumps -ldmumps -lcmumps -lzmumps -lmumps_common -lmpiseq -lpord \
 	-ltet -ltriangle \
-	-larpack -lopenblas 
-#	-lgfortran -lquadmath
+	-larpack -lopenblas -lgfortran -lquadmath -lpthread
 
 SRCS=$(wildcard  $(SRCDIR)/*.cpp)
 OBJS=$(patsubst $(SRCDIR)/%.cpp, $(OBJDIR)/%.o, $(SRCS))
@@ -54,4 +46,4 @@ clean:
 
 .PHONY: test
 test:
-	$(BINDIR)/$(BIN) $(BINDIR)/Strip.core
+	$(BINDIR)/$(BIN) $(BINDIR)/../data/Strip.core
