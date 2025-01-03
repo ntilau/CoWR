@@ -11,8 +11,8 @@ BIN = core
 
 CC = g++
 INCDIR = -I./dep/include
-LIBDIR = -L./dep/lib/$(ARCH)-$(PLAT)/ -L/opt/homebrew/Cellar/gcc/14.2.0_1/lib/gcc/current/
-
+LIBDIR = -L./bin/$(ARCH)-$(PLAT)/ 
+#-L/opt/homebrew/Cellar/gcc/14.2.0_1/lib/gcc/current/
 BINDIR  = ./bin/$(ARCH)-$(PLAT)
 OBJDIR  = ./obj/$(ARCH)-$(PLAT)
 SRCDIR  = ./src
@@ -46,4 +46,5 @@ clean:
 
 .PHONY: test
 test:
+	cd $(BINDIR)
 	$(BINDIR)/$(BIN) $(BINDIR)/../data/Strip.core
