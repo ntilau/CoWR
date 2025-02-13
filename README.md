@@ -1,4 +1,4 @@
-## Compute Weighed Residuals a.k.a. CoWR
+## Compute Weighted Residuals a.k.a. CoWR
 Generalized version of FES to extend to any Weighted Residuals Methods framework
 The goal is to have an as modular as possible implementation minimizing the need
 for external libraries.
@@ -15,9 +15,9 @@ To-do:
 - Modular post processing
 
 # Releases
-Download [x86_64-linux-gnu](https://github.com/ntilau/core/raw/master/bin/x86_64-linux-gnu/core) build or type in your terminal:
+Download [x86_64-linux-gnu](https://github.com/ntilau/CoWR/raw/master/bin/x86_64-linux-gnu/core) build or type in your terminal:
 ```shell
-wget https://github.com/ntilau/core/raw/master/bin/x86_64-linux-gnu/core
+wget https://github.com/ntilau/CoWR/raw/master/bin/x86_64-linux-gnu/core
 ```
 
 # References
